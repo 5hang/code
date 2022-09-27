@@ -1,0 +1,325 @@
+
+centos 7   
+
+yum  update
+ yum install -y gcc
+yum install gcc build-essential
+yum install gcc gcc-c++ autoconf automake
+yum -y install zlib zlib-devel openssl openssl-devel pcre pcre-devel 
+yum install git
+
+
+centos goland 破解找淘宝
+
+=======================================================================
+go 环境配置
+
+wget https://golang.google.cn/dl/go1.19.1.linux-amd64.tar.gz
+
+解压 和目录创建
+tar -zxvf go1.19.1.linux-amd64.tar.gz -C /usr/local/
+mkdir gocode     /usr/local/gocode/
+
+配置环境变量
+配置环境变量。修改配置文件，键入命令：vim /etc/profile，在正常模式下，键入大写字母G，立刻返回到文件尾，键入小写i进入编辑模式，在末尾追加如下代码：
+
+export GOROOT=/usr/local/go
+export GOPATH=/usr/local/gocode
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH 
+
+4. 刷新环境变量
+source /etc/profile 
+
+5. 验证
+source /etc/profile
+go version
+go env
+
+=======================================================================
+安装gprc-golang
+
+安装网上推荐的 go get google.golang.org/grpc 这个是安装不了的，
+
+原因是这个代码已经转移到github上面了，但是代码里面的包依赖还是没有修改，还是http://google.golang.org这种。
+
+所以不能使用go get的方式安装，正确的安装方式：
+
+    git clone https://github.com/grpc/grpc-go.git  $GOPATH/src/google.golang.org/grpc
+    git clone https://github.com/golang/net.git $GOPATH/src/golang.org/x/net
+    git clone https://github.com/golang/text.git $GOPATH/src/golang.org/x/text
+    git clone https://github.com/golang/sys.git $GOPATH/src/golang.org/x/sys 
+    git clone https://github.com/google/go-genproto.git $GOPATH/src/google.golang.org/genproto
+    cd $GOPATH/src/
+    go install google.golang.org/grpc 或者  go install google.golang.org/grpc@latest
+如果上面的步骤 出现链接失败 connect ，refused，需要设置下面的代理才能安装的
+七牛云提供的代理地址
+export GOPROXY=https://goproxy.cn 阿里云提供的代理 https://mirrors.aliyun.com/goproxy/，或者 Go 官方提供的全球代理 https://goproxy.io。 
+
+   、、go 代码使用 import google.golang.org/grpc 时候可能会出错 ，需要在命令行：go mod tidy
+	在项目目录下打开终端，执行go mod tidy解决，这个命令会删除不需要的依赖包、下载新的依赖包、更新go.sum
+
+=======================================================================
+安装 protobuf 
+
+ 安装3.11.2
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.2/protobuf-all-3.11.2.tar.gz
+tar zxf protobuf-all-3.11.2.tar.gz
+cd protobuf-3.11.2
+# 或者 安装3.6.1
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.tar.gz
+tar zxf protobuf-all-3.6.1.tar.gz
+cd protobuf-3.6.1
+
+./configure -prefix=/usr/local/
+sudo make # 要编译很久
+sudo make check
+sudo make install
+protoc --version
+ 
+编译 proto
+cd protobuf-3.11.2
+cd examples
+mkdir tutorial
+protoc --go_out=tutorial addressbook.proto
+ll tutorial 
+==========================================================================
+linux安装consul
+1.下载consul_0.7.5_linux_amd64.zip
+
+wget https://releases.hashicorp.com/consul/0.7.5/consul_0.7.5_linux_amd64.zip
+1
+2.解压consul_0.7.5_linux_amd64.zip
+
+unzip consul_0.7.5_linux_amd64.zip
+1
+解决办法-bash: unzip: 未找到命令如果解压出现该错误
+
+yum -y install unzip
+———————————————— 
+4.启动
+
+我的linux Ip地址10.90.81.135
+
+./consul agent -dev -ui -node=consul-dev -client=10.90.81.135
+
+5.访问
+
+10.90.81.135:8500
+1
+如果访问不了，临时关闭防火墙
+
+systemctl stop firewalld 
+
+
+==========================================================================
+centos 安装VSCODE
+1.在CentOS上安装Visual Studio工具
+执行步骤如下在CentOS系统上安装Visual Studio Code：
+第一步：导入Microsoft GPG密钥：
+
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+第二步：创建以下存储库文件以启用Visual Studio代码存储库：
+
+sudo vim /etc/yum.repos.d/vscode.repo
+将以下内容粘贴到文件中： /etc/yum.repos .d / vscode.repo
+
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+保存文件并关闭文本编辑器。
+
+存储库已启用，请键入以下内容以安装最新版本的Visual Studio代码：
+
+sudo yum install code
+就是这样。 Visual Studio Code已安装在CentOS桌面上，您可以开始使用它。
+
+2.配置环境变量
+安装完成后的vscode 是不能直接以root身份打开的，需要设置一些参数，但是对于每次打开而言很麻烦，所以将其配置进入环境变量中，方便每次打开。
+
+# root 用户
+
+vim ~/.bashrc
+# 添加一行
+
+alias code='/usr/share/code/code . --no-sandbox --unity-launch'
+ # 保存后，执行下边的命令生效
+
+source ~/.bashrc 
+打开vscode：切换至root用户，输入命令code
+
+
+
+==========================================================================
+centos7  VScode  golang 环境配置
+
+vscode扩展搜索 go    安装。。。
+
+# Go 1.13 及以上（推荐）
+
+# Windows执行
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.io,direct
+
+# Windows PowerShell 执行 
+$env:GO111MODULE = "on"
+$env:GOPROXY = "https://goproxy.cn"
+
+# macOS 或 Linux 执行
+export GO111MODULE=on
+export GOPROXY=https://goproxy.cn
+
+# 或者  macOS 或 Linux 执行
+echo "export GO111MODULE=on" >> ~/.profile
+echo "export GOPROXY=https://goproxy.cn" >> ~/.profile
+source ~/.profile
+
+
+// 手动安装    这里安装失败 一定要设置代理！！！！！！！！！！！！！！并且要创建一个项目后  有go mod 后才能下载安装的奥
+go get -u -v github.com/mdempsky/gocode
+go get -u -v github.com/uudashr/gopkgs/v2/cmd/gopkgs
+go get -u -v github.com/ramya-rao-a/go-outline
+go get -u -v github.com/acroca/go-symbols
+go get -u -v golang.org/x/tools/cmd/guru
+go get -u -v golang.org/x/tools/cmd/gorename
+go get -u -v github.com/cweill/gotests/...
+go get -u -v github.com/fatih/gomodifytags
+go get -u -v github.com/josharian/impl
+go get -u -v github.com/davidrjenni/reftools/cmd/fillstruct
+go get -u -v github.com/haya14busa/goplay/cmd/goplay
+go get -u -v github.com/godoctor/godoctor
+go get -u -v github.com/go-delve/delve/cmd/dlv
+go get -u -v github.com/stamblerre/gocode
+go get -u -v github.com/rogpeppe/godef
+go get -u -v github.com/sqs/goreturns
+go get -u -v golang.org/x/lint/golint
+
+
+在 vscode   文件-首选项- 设置 -扩展 - go  、找到  goroot  gopath  json   设置好它的路径
+
+完毕了。。。。。。。。。。。。。。。。。
+
+
+
+==========================================================================
+centos7  安装protobuf  go插件     .......protoc-gen-go
+
+     国外安装
+		go get github.com/golang/protobuf/proto,这条命令本质上是先执行 git clone下载文件，然后执行go install安装软件包
+
+     国内安装
+      
+	 git clone https://github.com/golang/protobuf.git
+	 将protobuf文件放在$GOPATH/src/github.com/golang/（没有则自己创建此目录）
+                 进入protobuf目录，执行  go install ./proto ./jsonpb ./ptypes ./protoc-gen-go，   
+	 进入protoc-gen-go/  执行 go build    . 将生成的 protoc-gen-go 可执行文件  复制到$gopath/src/bin 目录
+	
+	路径是
+	$gopath/src/github.com/golang/protobuf/protoc-gen-go
+
+	编写的.proto文件时候  ， 需要增加下面一行代码（如果执行命令出错的话）
+	option  go_package="../pb";
+
+	执行   .proto   文件生成   .go 文件的命令：
+	 protoc --go_out=./  *.proto		       生成不带服务 的go文件
+                 protoc --go_out=plugins=grpc:./  *.proto    生成带服务的proto，的go文件
+
+
+
+==========================================================================
+centos7  安装rar 
+entOS本身不自带rar环境，因此对于rar文件无法直接解压，需要先配置rar环境。
+
+首先需要确定自己的系统是64位还是32位的，通过这个命令：
+
+[root@localhost]# uname -a   确定是 64、32位操作系统
+ 
+在终端中输入命令：
+
+32位：
+wget http://www.rarsoft.com/rar/rarlinux-4.0.1.tar.gz
+64位
+wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz
+ 
+ 
+tar -zxvf rarlinux-4.0.1.tar.gz // 对应32位下载的
+tar -zxvf rarlinux-x64-5.3.0.tar.gz // 对应64位下载的
+进入解压出的“rar”文件夹：
+
+cd rar
+进行配置：
+
+make
+出现下面的信息就是安装成功了：
+
+mkdir -p /usr/local/bin
+
+mkdir -p /usr/local/lib
+
+cp rar unrar /usr/local/bin
+
+cp rarfiles.lst /etc
+
+cp default.sfx /usr/local/lib
+现在就可以任意使用了，关于rar的操作有很多，这里只记录两个最常用的：
+
+解压：
+rar x test.rar //解压 test.rar 到当前目录
+压缩
+rar test.rar ./test/ //将 test目录打包为 test.rar
+ 				
+
+
+=====================================================================================
+安装protoc-gen-micro     +   micro
+
+执行下面一句话， /gopath/bin/protoc-gen-micro   就会产生这个可执行文件，在 micro项目中 make proto 就能产生出  .go  的配置文件
+go install github.com/micro/micro/v3/cmd/protoc-gen-micro@master
+
+
+micro 安装 
+ 
+# Linux  参考：https://github.com/micro/micro
+
+go install github.com/micro/micro/v3@latest
+  
+============================================================================
+  gin 安装使用方法：
+
+  1： go get -u github.com/gin-gonic/gin
+  2： import "github.com/gin-gonic/gin"
+  3： go mod tidy
+
+
+
+=====================================================================================
+   go 图片验证码获取
+go get github.com/afocus/captcha  
+
+
+https://github.com/afocus/captcha
+
+
+=====================================================================================
+
+centos安装redis 7 
+
+ yum install -y gcc
+
+wget https://download.redis.io/releases/redis-7.0.2.tar.gz
+ 
+tar -zxf redis-7.0.2.tar.gz 
+
+cd cd redis-7.0.2
+
+make
+
+默认安装在 /usr/local/bin/目录，这个目录默认就在系统环境变量中。
+需要更改可以在后面接PREFIX = 安装路径
+make install    把redis安装目录s 生成的可执行文件复制到/usr/local/bin  下
+
+启动redis
+使用redis-serever启动redis
+redis-server &
