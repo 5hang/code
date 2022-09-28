@@ -1,0 +1,21 @@
+/bin   可执行文件
+/boot 启动引导文件
+/data 程序第三方软件的地方
+/dev  磁盘 硬件设备
+/etc  各种引用的配置文件
+
+/home  家目录，
+/lib  ->usr/lib  库文件
+/lib64->usr/lib64
+/media   
+/mnt 临时文件
+/opt  临时文件
+/proc 启动程序后的镜像
+/root 
+/run   程序启动的pid文件
+/sbin ->usr/sbin  管理权限的
+/srv
+/sys  系统文件
+/tmp 临时文件
+/usr   用户目录
+/var   放各种日志
