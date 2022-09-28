@@ -233,3 +233,34 @@ make install    把redis安装目录s 生成的可执行文件复制到/usr/loca
 启动redis
 使用redis-serever启动redis
 redis-server &
+
+********************************************************************************************************************************************************* 
+*************************************************************************  go 操作 redis  ****************************************************************
+
+客户都选择 redigo     https://godoc.org/github.com/gomodule/redigo/redis#pkg-examples
+
+package main
+
+import (
+	"fmt"
+	"github.com/gomodule/redigo/redis"   // 这里先写入头文件，  在go mod 目录下  执行go mod tidy 下载这个配置，然后就有提示了
+)
+
+func main() {
+	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
+	if err != nil {
+		fmt.Println("err:", err)
+		return
+	}
+
+	defer conn.Close()
+
+	reply, err := conn.Do("set", "id", "1001")
+	r, e := redis.String(reply, err)
+
+	fmt.Println(r, e)   // Ok，nil 
+}
+
+
+  
+  
