@@ -1,0 +1,348 @@
+Remote dictoinary server    检索数据，远程字典服务     6379
+
+基于内存   支持持久化   高性能的 (适合存储 1：频繁访问的  2：较小的数据)
+支持数据备份，支持多种数据结构
+
+Mongodb：适合存放 大数据的数据库
+
+启动方法： 
+1：  redis-server&  
+2：  指定配置文件启动  redis-server   redis.conf &
+
+Ps-ef |grep redis   查看redis 进程
+
+关闭redis服务：
+1：kill -9 pid          暴力关闭
+2：redis-cli  shutdown 安全关闭redis
+
+Redis-cli   默认链接 本机的redis
+127.0.0.1:6379  > 
+
+Redis-cli  -p 端口号   链接本机指定的redis
+
+Redis-cli  -h  IP地址  -p 端口，链接指定ip主机的指定端口的redis
+
+Redis--benchmark 测试redis 性能
+
+
+进入redis   发送 ping  返回pong   测试rdis 是否正常的
+
+进入redis   发送 info 查看 redis 运行的信息
+
+Redis 默认自动创建16个数据库；（可以通过配置文件修改默认创建数据库的个数）
+redis的数据库是有他自己维护创建的数据库
+
+Set key value
+   
+Select index  切换数据库的
+
+Dbsize  查看当前数据库条数,所有key的数量
+
+Keys *
+Config get *  查看所有的配置信息
+Flushdb  清空当前数据库
+Flushall   情况所有数据库
+
+Redis 常用命令：
+
+      有关key的操作命令
+
+Keys 通配符    查询所有满足通配符的key
+
+Exists key   判断key是否存在   返回 1   0  
+
+Ttl  key  查询 key 最大的生存时间剩多少   -1 无限制  -2 没这个key
+
+Expire key  second   给key 设置最大生存时间
+
+Type key 查看key类型
+
+Rename key name  重命名key
+
+Del  key  ... 删除 key
+
+Redis 关于string 类型的操作命令
+
+Set 键 值   set zname zhangsan
+Get 键      
+Append   key  valye  追加字符串的 如果key不存在 则新创建一个
+
+获取字符串长度
+Strlen key  
+
+（key必须是数字奥）将字符串数字 +1 运算   
+Incr key    返回+1后的数据  （如果key不存在，值初始化为0，然后+1）
+
+Decr key    返回-1后的数据
+
+Getrange key startindex endindex  字符串截取
+
+
+List 的操作命令：
+
+lpush key v1 v2 v3   将一个或者多个值 插入到列表的表头，               
+
+Lrange key startindex endindex 获取list的元素
+
+Lrange list 0 -1  获取list全部数据
+
+rpush key v1 v2 v3   将一个或者多个值 插入到列表的表尾，    
+
+Lpop key  从表头删除一个
+Rpop key  从表尾删除一个
+
+Lindex  key index 获取 指定下表的 元素
+
+Llen key  获取list长度
+
+Lrem  key count value   移除count个 为value的值
+Count > 0 :从左侧开始
+Count <0 :从右侧开始 
+Count=0：移除所有是value的元素
+
+
+
+
+
+
+Redis中set 数据操作命令，单key -- 多个value ，value无序 ，不能重复
+
+
+Sadd  key  v1  v  ...   value 不能重复，重复的只有第一个能加进去
+
+Smembers key  获取集合所有元素
+
+
+Sismember  key  value 判断元素是否在集合中了  存在返回1  不存在返回0
+
+Scard key  获取集合长度
+
+Srem  key  v1 v2...  移除集合中指定的元素（不存在的元素或略） 返回成功移除的
+
+Srandmember key  从集合随机获取一个
+Srandmember key count   
+Count>0: count个不重复
+Count<0:count个随机
+Spop key count  从集合中随机移除几个元素
+
+Smove set01  set02  value  将一个集合中的元素移动到另一个集合中
+
+Sdiff  set1  setother1  setother2.. 获取第一个集合中有，其他的集合中没有的元素 【差集
+
+Sinter  set1  set2 ...  获取所有集合中共同的元素【交集
+
+Sunion set1  set2 ...   所有集合合在一起        【并集
+
+
+
+
+
+Redis hash操作命令：  key  :field-->value
+                          :field->value
+
+Hset  key field1 value1  field2 value2 ...设置数据 如果存在直接覆盖
+
+Hsetnx key field value   当field-value存在的话不设置，不存在的才设置
+
+
+Hget key field  
+
+
+Hmget key field1 field2....
+
+Hgetall  key   获取hash中所有的 k，v的值
+
+Hdel key field1  field2 .. 从hash删除 若干个field
+
+Hlen key  获取hash field  个数
+
+Hexists  key field   判断hash中是否存在某个field
+
+Hkeys  key  获取所有field
+
+Hvals  key  获取所有value
+
+
+Hincrby key field    必须是int指定的int的field +
+Hincrbyfloat key  field float  指定的field的浮点运算  
+
+
+  
+Zset 操作命令： 有序的集合（不能重复）
+本质是集合，所有元素不能重复，每一个元素都关联一个分数，redis会
+根据分数对元素进行排序，
+
+
+Zadd  key  score member  。。。 将一个或者多个member+分数放入有序集合
+
+
+如果元素存在的  那么将分数覆盖
+Zadd zz1  20 z1  30 z2  40 z3
+
+
+Zrange key startindex endindex 获取范围的元素 
+
+
+Zrevrange key 。。。
+Zrangebyscore key min  max   【withscore】 根据score 获取闭合区间的元素
+Zrevrangebyscore。。。
+
+Zrem key member .... 移除多个元素
+Zcard key  获取长度
+
+
+Zrank  key  member 获取指定元素的排名
+
+Zcount key min max获取分数在指定区间里面的元素的个数
+
+Zcore key member 获取指定元素的分数
+
+Zrevrank  key member  获取指定元素的降序排名
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Redis 配置文件的设置
+
+Port: 只当redis使用的端口 默认 6379
+
+Bind：默认127 0 0 1本机所有的网卡都能访问的，实际使用时候 会绑定一个本机的ip
+Tcp-keepalive：60s  服务器指定一段时间请求客户端是否在线，否则断开， 0s ：不检测
+
+
+Loglevel：配置日志级别   开发阶段debug 上线阶段notice warn
+Logfile：  默认的日志输出到控制台，设置它 指定到一个日志文件去
+Databases：默认创建的数据库的个数   16
+
+Redis的安全配置 （默认的不适用的）
+ Requirepass: 配置redis的访问密码，默认不配置的，  配置需要在protected-mode=yes 
+才起作用的，  使用密码登录客户端：redis-cli  -h ip -p 6379 pwd
+
+
+ Redis的持久化：在适当的时机把内存的数据写入磁盘，	每次redis 启动把磁盘数据读取到内存
+
+
+Redis 数据库是缓存数据的，里面的数据一般 关系性数据库都存在的
+一般启动程序 ，会把关系型数据库的数据读取到redis中的。
+
+Rdb：	 指定时间间隔  指定写入次数 ，自动触发持久化操作（默认的设置）
+Dbfilename: 持久化数据生成的文件名  默认dump.db 可以自己配置的
+Dir ./  配置持久化文件的目录
+
+AOF： 记录修改操作日志，每次redis启动，恢复数据(效率底)
+AOF 配置信息
+ 
+
+Redis 不同客户都修改数据 会出问题？？？？？？？？************
+*************************************************************
+
+Reids的事物：把一组数据库操作放在一起执行  保证原子性
+
+Redis的事务： 允许把redis的命令放在一起执行，但是不能保证完全原子性的
+
+
+Multi ：标记一个事务的开始  (把下面的命令序列号压入堆栈)
+Set k1 v1
+Set k2 v2 
+Exec： 执行上面的命令  （到这里才开始执行命令）
+Discard:   清楚 所欲压入队列的命令，反悔了哈哈 取消上面的命令执行了
+
+
+！！！在压入队列有问题的 ，redis事务能后保证，但是在压入队列的语法没问题 
+那么就不能保证执行的原子性了。  redis 本身对事务做 了简化的操作的了
+WATCH  监控一个建，保证事务的一致性
+Unwatch  放弃监控某一个建
+
+总结：事务所有的命令都是序列号，顺序的执行，执行的过程中不会被其他的客户端打断，
+除非使用watch 监控
+
+
+
+
+
+Redis ：消息发布订阅：（100%  不使用 的）
+就是redis 的一个客户端修改了参数，要通知其他的客户端奥
+
+Subscribe  chinal1  chinal2 ... 订阅多个频道
+
+Publish  chinal1 value  发布消息
+
+ActiveMQ2  正常使用的消息机制
+
+
+*****************************************************************
+Redis：写少 读多的
+主从复制,  主库写，同步到从库，   从库读
+
+
+Info replicaion 查看主机从机信息
+
+Master:主机
+Slave：从机
+
+提供redis的配置文件3份  redis6379.conf  redis6380.conf redis6381.conf
+修改 port 6379
+ Pidfile   __6379.pid
+ Logfile    6379.log
+ Dbfilename   dump6379.rdb
+
+模拟主从复制
+
+redis-server redis6379.conf &
+redis-server redis6379.conf &
+redis-server redis6379.conf &
+Info replication 查看redis的主从角色
+
+设置主从关系
+     主机不用设置的奥
+     设置从机1：slaveof  ip  port  
+Slaveof  127.0.0.1  6379   那么这个机子的主机就设置成了6379
+
+设置完成主从关系后，主机的所有数据 复制到从机中去了
+主机增加，修改数据，从机同步了
+
+
+在从机写入数据 ：(error) READONLY You can't write against a read only replica.
+主：读写都可以
+从：只能读   一个从只能跟一个主
+
+1：
+主机关机了：从机原地待命了 哈哈
+主机恢复：一切恢复正常了
+
+2：		从机宕机： 主机少了一个从机，其他的不受影响了
+从机恢复：必须重新设置主从关系
+
+主机宕机，从机升级成主机的方法：
+
+ 		从机1 设置  slaveof no one
+    从机2：     slaveof ip port
+ 
+
+主从模式： 你不知道主机什么时候宕机，不能即使恢复
+
+
+
+Redis 哨兵模式：
+自动盯着主机，一但发现异常，自动找一个从机 改成主机
+
+主机如果宕机后恢复了： 主机自动变成从机了
+
+1:搭建1主2从的架构
+2：提供哨兵配置文件
+
+编写哨兵配置文件   redis_sentinel.conf    监控的主机
+内容： Sentinel  monitor dc-redis  127.0.0.1  6379  1
+
+启动哨兵监控软件：redis-sentinel  redis_sentinel.conf  
