@@ -37,4 +37,43 @@ processManagement:
  
  mongo  打开客户都
  
- 
+******************************************************mongod 语法******************************************************** 
+show dbs; 
+use mysql; 切换数据库，不存在就创建
+show tables;show collections; 显示数据库
+db.users.insert( { name:"" ,age : 11} );
+
+ db.dropDatabase();  删除当前的数据库
+{ "dropped" : "mysql", "ok" : 1 }
+
+> use mysql
+switched to db mysql
+> db.user.insert({name:"zhangsan",age:22})
+WriteResult({ "nInserted" : 1 })
+> db.user.find({})
+{ "_id" : ObjectId("63411b9a249d5b6d74c2d13b"), "name" : "zhangsan", "age" : 22 }
+> 
+
+db.user.insertOne({})
+db.user.insertMany({})
+
+> db.user.find({name:"zhangsan"}).pretty();
+{
+	"_id" : ObjectId("63411b9a249d5b6d74c2d13b"),
+	"name" : "zhangsan",
+	"age" : 22
+}
+> 
+
+db.user.find({     ...name=aa && (age<30 or item p开头)
+ name:"aa",
+ $or:[ {age:{$lt:30}},{item: /^p/} ]
+})
+find 查找 包含、不包含某个字段的方法
+db.user.find(({},{"name":1}))
+db.user.find(({},{"name":0}))
+
+db.user.find().sort({"orderTime","price":1}).limit(5).skip(5)
+
+
+
