@@ -1,0 +1,40 @@
+
+wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.4.9.tgz
+tar -zxvf mongodb-linux-x86_64-rhel70-4.4.9.tgz 
+
+mkdir -p /mongodb/data  /mongodb/log
+mv mongodb-linux-x86_64-rhel70-4.4.9  /usr/local/mongodb
+
+
+
+*************配置环境变量******************
+ vim /etc/profile
+export MONGODB_HOME=/usr/local/mongodb
+PATH=$PATH:$MONGODB_HOME/bin
+  source /etc/profile
+  
+编辑mongo.conf 
+ systemLog:
+ destination: file
+ path: /mongodb/log/mongod.log
+ logAppend: true
+storage:
+ dbPath: /mongodb/data
+ engine: wiredTiger
+ journal:
+  enabled: true
+net:
+ bindIp: 0.0.0.0
+ port: 27017
+processManagement:
+ fork: true
+
+配置文件启动mongod
+
+ mongod  -f /usr/local/mongodb/bin/mongo.conf      启动、关闭mongod服务器
+ mongod -f  /usr/local/mongodb/bin/mongo.conf --shutdown
+ 
+ 
+ mongo  打开客户都
+ 
+ 
