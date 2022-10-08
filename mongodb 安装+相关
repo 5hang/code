@@ -181,6 +181,27 @@ db.user.aggregate([
 { "_id" : "女", "sumgrade" : 156 }
 > 
 
+
+> db.student.aggregate([{  $group:{ _id:"$sex", sumgrade:{$avg:"$grade" }}     }    ])     统计男女各自的平均分数
+{ "_id" : "男", "sumgrade" : 81.25 }
+{ "_id" : "女", "sumgrade" : 78 }
+
+> db.student.aggregate([{  $group:{ _id:"$sex", sumgrade:{$sum:1 }}     }    ])   统计男女各自总人数
+
+
+> db.student.aggregate([{  $group:{ _id:null,renshu:{$sum:1},agv:{$avg:"$grade"}  }   }])  统计总人数  平均分
+{ "_id" : null, "renshu" : 6, "agv" : 80.16666666666667 }
+> 
+
+> db.student.aggregate([                           统计男女各自总人数  升序排序
+     {  $group:{ _id:"$sex", renshu:{$sum:1 }}},
+     {  $sort:{renshu:1} }]) 
+        
+{ "_id" : "女", "renshu" : 2 }
+{ "_id" : "男", "renshu" : 4 }
+
+
+
 ***********************************************************************************************************************************************
 db.user.find().count()  统计记录数
 
