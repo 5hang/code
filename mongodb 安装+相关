@@ -38,10 +38,28 @@ processManagement:
  mongo  打开客户都
  
 ******************************************************mongod 语法******************************************************** 
-show dbs; 
-use mysql; 切换数据库，不存在就创建
+show dbs;                  查询数据库
+use mysql;                 切换数据库，不存在就创建
+db；                       显示当前所在的数据库
+
 show tables;show collections; 显示数据库
+
+
+
+*********************************创建集合的2种方式，1：插入创建  2：手动创建的*************************************************
 db.users.insert( { name:"" ,age : 11} );
+
+db.createCollection("test")  创建集合 （不限制大小的集合）
+{ "ok" : 1 }
+db.createCollection("fixedTest",{capped:true,size:6000000}) 创建固定大小的集合
+{ "ok" : 1 }
+> db.createCollection("fixed2",{capped:true,size:6142888,max:10000,autoIndexId:true})
+{
+	"note" : "The autoIndexId option is deprecated and will be removed in a future release",
+	"ok" : 1
+}
+*******************************************************************************************************************************
+
 
  db.dropDatabase();  删除当前的数据库
 { "dropped" : "mysql", "ok" : 1 }
