@@ -1,4 +1,6 @@
 
+*************************************************************   centos 7 安装 MongoDB 4.4  *********************************************************************
+
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.4.9.tgz
 tar -zxvf mongodb-linux-x86_64-rhel70-4.4.9.tgz 
 
