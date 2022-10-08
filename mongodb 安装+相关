@@ -167,7 +167,20 @@ db.user.aggregate([
    $min:获取结合中所有文档的最小值
    $max:获取结合中所有文档的最大值
    
-   
+   > db.student.find();
+{ "_id" : ObjectId("63417041e97c78c2d8af31f9"), "name" : "张三", "age" : 18, "sex" : "男", "grade" : 78 }
+{ "_id" : ObjectId("63417041e97c78c2d8af31fa"), "name" : "李三", "age" : 18, "sex" : "女", "grade" : 88 }
+{ "_id" : ObjectId("63417041e97c78c2d8af31fb"), "name" : "赵三", "age" : 18, "sex" : "女", "grade" : 68 }
+{ "_id" : ObjectId("63417041e97c78c2d8af31fc"), "name" : "王三", "age" : 18, "sex" : "男", "grade" : 98 }
+{ "_id" : ObjectId("63417041e97c78c2d8af31fd"), "name" : "孙三", "age" : 18, "sex" : "男", "grade" : 76 }
+{ "_id" : ObjectId("63417041e97c78c2d8af31fe"), "name" : "韩三", "age" : 18, "sex" : "男", "grade" : 73 }
+
+
+> db.student.aggregate([{  $group:{ _id:"$sex", sumgrade:{$sum:"$grade" }}     }    ])   统计男女各自的总分数
+{ "_id" : "男", "sumgrade" : 325 }
+{ "_id" : "女", "sumgrade" : 156 }
+> 
+
 ***********************************************************************************************************************************************
 db.user.find().count()  统计记录数
 
