@@ -252,7 +252,123 @@ db.student.aggregate([{
  	$skip:5
 }])
 
-***********************************************************************************************************************************************
+
+*******************************************************************  索 引 **************************************************************************
+                            索引针对一个多个字段做排序的结构  主要在用户遍历数据时候需要（集合中的索引的个数能超过 64 个）
+
+创建索引  索引的额外开销，每个索引占据一定的存储空间，在进行插入，更新删除操作也要对所有进行操作的
+db.user.createIndex({字段：1，-1}  ,{索引名字，类型})
+
+ensureIndex()  => createIndex()的前身
+
+ db.student.createIndex({name:1},{name:"hahahahha"})
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+> 
+
+查询索引
+> db.student.getIndexes();
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_"
+	},
+	{
+		"v" : 2,
+		"key" : {
+			"name" : 1
+		},
+		"name" : "hahahahha"
+	}
+]
+> 
+
+系统自带的索引 无法删除的
+
+db.user.dropIndexes()
+db.user.dropIndex("")
+
+> db.student.dropIndex("hahahahha")   这里的 hahahahha 是通过 getindex 获取后的名字
+{ "nIndexesWas" : 2, "ok" : 1 }
+> 
+
+创建组合索引
+ db.student.createIndex({name:1,age:1})
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+> db.student.getIndexes();
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_"
+	},
+	{
+		"v" : 2,
+		"key" : {
+			"name" : 1,
+			"age" : 1
+		},
+		"name" : "name_1_age_1"   系统生成索引给的名字
+	}
+]
+> 
+
+创建唯一索引   (这一列就不能重复了奥)
+db.user.createIndex({name:1}{unique:"name"})
+
+全文索引  mongodb 2.6 后 ，默认开启了 全文的检索了***********************************************************************
+> db.post.insert({post_text:"hello word mongodb QF",tags:["DB","mongodb"]]})
+uncaught exception: SyntaxError: missing } after property list :
+@(shell):1:71
+> db.post.insert({post_text:"hello word mongodb QF",tags:["DB","mongodb"]})
+WriteResult({ "nInserted" : 1 })
+ 
+> db.post.find()
+{ "_id" : ObjectId("63424cd8611e5250eb8a38ee"), "post_text" : "hello word mongodb QF", "tags" : [ "DB", "mongodb" ] }
+> db.post.createIndex({post_text:"text"})
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+> 
+ 全文索引的查找
+> db.post.find({$text:{$search:"db"}})
+
+***********************************************************数据库的备份  恢复**************************************************************** 
+
+****************备份
+mongodump   -h:   mongodb所在服务的ip：27017
+	    -d：  需要备份的数据库实例：例如 test、mysql
+	    -o：  备份数据存放的位置
+
+
+mongodump -h 127.0.0.1  -d test  -o  ./benfen/                 备份数据库
+ 
+mongodump --collectioon 表名字  --db 数据库名字  -o ./benfen/    备份table
+
+****************恢复
+mongorestore -h mongodb主机的地址 -d 数据库名字  数据库所在的路径(路径要写到最里面一层)
+
+mongorestore -h 127.0.0.1 -d newTest ./benfen/test
+
+************************************************************
+
 db.user.find().count()  统计记录数
 
 
