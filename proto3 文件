@@ -1,0 +1,21 @@
+ 
+protoc --go_out=./  *.proto		               生成不带服务 的go文件
+protoc --go_out=plugins=grpc:./  *.proto     生成带服务的proto，的go文件
+
+****************************************************************
+syntax = "proto3";
+
+package pb;
+option  go_package="../pb";
+
+message Teacher{
+  int32  age = 1 ;
+  string name= 2 ;
+}
+
+service SayName{
+  rpc SayName (Teacher) returns (Teacher);
+}
+
+
+*****************************************************************
