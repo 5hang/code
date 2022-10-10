@@ -32,8 +32,12 @@ consul agent -dev  以开发者模式运行一个consul 实例
                                  不加这个参数，表示以客户端方式开启，不能被链接
               -ui                可以使用web页面来产看服务发现的详情
            
-启动consul时候 mkdir  -p /etc/consul.d
-cd /etc/consul.d
+启动consul时候 mkdir  -p /etc/consul.d  consul 安装完成后 先创建这个文件夹
+
+********************************注册服务到consul的步骤
+1：  cd /etc/consul.d
+2:   创建json   
+3：  按照json语法填写服务信息：
  t@192 consul.d]# vi  web.json   将服务注册到consul中 用 2：方式开启，就能在web访问到了
                 {
                  "service":{
@@ -42,8 +46,10 @@ cd /etc/consul.d
                   "port" : 8800
                  }
                 }
+4：    重新启动consul
+5：    查看服务  1）：浏览器查看   2）：终端命令查看  
 
-       
+*********************************************启动consul的2种方式**************************************************************
 1:    consul agent -dev -ui -node=8888 -client=0.0.0.0
         
 2:    consul agent -server -bootstrap-expect 1 -data-dir /tmp/consul -node=n1 -bind=127.0.0.1 -ui -rejoin -config-dir=/etc/consul.d/ -client 0.0.0.0
