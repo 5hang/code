@@ -18,6 +18,7 @@ consul -h          帮助信息
 consul members     查看consul集群有多少个consul成员
 consul info        
 consul leave       优雅的关闭
+consul reload      重新加载配置文件
 
 consul agent -dev  以开发者模式运行一个consul 实例
               -bind=0.0.0.0      指定consul所在机器的ip地址 默认0.0.0.0
@@ -46,6 +47,22 @@ consul agent -dev  以开发者模式运行一个consul 实例
                   "port" : 8800
                  }
                 }
+    创建一个健康检查的json
+              {
+                 "service":{
+                  "name" : "bj39",
+                  "tags" : ["ccc","ddd"],
+                  "port" : 9000，
+                  "check":{
+                       "id"      :"api",
+                       "name"    :"http api on port 9000",
+                       "http"    :"http://localhost:9000",
+                       "interval":"5s",
+                       "timeout" :"1s",
+                    }
+                  }
+                }
+                
 4：    重新启动consul
 5：    查看服务  1）：浏览器查看   2）：终端命令查看  
 
