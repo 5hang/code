@@ -32,9 +32,22 @@ consul agent -dev  以开发者模式运行一个consul 实例
                                  不加这个参数，表示以客户端方式开启，不能被链接
               -ui                可以使用web页面来产看服务发现的详情
            
+启动consul时候 mkdir  -p /etc/consul.d
+cd /etc/consul.d
+ t@192 consul.d]# vi  web.json   将服务注册到consul中 用 2：方式开启，就能在web访问到了
+                {
+                 "service":{
+                  "name" : "bj38",
+                  "tags" : ["aaa","bbb"],
+                  "port" : 8800
+                 }
+                }
+
        
-consul agent -dev -ui -node=8888 -client=0.0.0.0
+1:    consul agent -dev -ui -node=8888 -client=0.0.0.0
         
+2:    consul agent -server -bootstrap-expect 1 -data-dir /tmp/consul -node=n1 -bind=127.0.0.1 -ui -rejoin -config-dir=/etc/consul.d/ -client 0.0.0.0
+    
 http://10.90.81.135:8500  如果访问不了，临时关闭防火墙
   
 systemctl stop firewalld 
