@@ -160,7 +160,16 @@ rar test.rar ./test/ //将 test目录打包为 test.rar
 go install github.com/micro/micro/v3/cmd/protoc-gen-micro@master
 
 
-micro 安装 
+***************安装 MICRO  2种方式 ：
+
+***************1：手动安装编译micro：
+1:	git clone https://github.com/micro/micro.git
+2:	cd micro/
+3:	go build -o micro main.go 
+4:	cp micro  /bin/
+***************2：一键安装：
+wget -q  https://raw.githubusercontent.com/micro/micro/master/scripts/install.sh -O - | /bin/bash
+ 
  
 # Linux  参考：https://github.com/micro/micro
 
