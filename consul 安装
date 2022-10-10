@@ -39,29 +39,30 @@ consul agent -dev  以开发者模式运行一个consul 实例
 1：  cd /etc/consul.d
 2:   创建json   
 3：  按照json语法填写服务信息：
- t@192 consul.d]# vi  web.json   将服务注册到consul中 用 2：方式开启，就能在web访问到了
-                {
-                 "service":{
-                  "name" : "bj38",
-                  "tags" : ["aaa","bbb"],
-                  "port" : 8800
-                 }
-                }
+ root@192 consul.d]# vi  web.json   将服务注册到consul中 用 2：方式开启，就能在web访问到了
+   {
+    "service":{
+     "name" : "bj38",
+     "tags" : ["aaa","bbb"],
+     "port" : 8800
+    }
+   }
     创建一个健康检查的json
-              {
-                 "service":{
-                  "name" : "bj39",
-                  "tags" : ["ccc","ddd"],
-                  "port" : 9000，
-                  "check":{
-                       "id"      :"api",
-                       "name"    :"http api on port 9000",
-                       "http"    :"http://localhost:9000",
-                       "interval":"5s",
-                       "timeout" :"1s",
-                    }
-                  }
-                }
+        {
+	"service":{
+		"name":"bj39",
+		"tags":["ddd","eee"],
+		"port":9000,
+		"check":{
+			"id":"api",
+			"name":"check ssss",
+			"http":"http://localhost:9000",
+			"interval":"5s",
+			"timeout":"1s"
+		}
+	}
+}
+！！！！！注意：如果json格式 有问题，那就手写把。。。。。。。。。
                 
 4：    重新启动consul
 5：    查看服务  1）：浏览器查看   2）：终端命令查看  
