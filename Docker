@@ -167,7 +167,26 @@ docker export 容器ID > xxx.tar  把整个容器备份
 cat xxx.tar | docker import -镜像用户/镜像名字：版本号  （相当于在本地创建这个镜像）docker -ps 查询看
 
 
+镜像的分层：联合文件系统，********************************
+
+docker文件有一层层文件系统组成
+
+默认的linux系统只有  ： （linux内核）bootfs rootfs
 
 
+docker分层 就是为了资源共享，方便迁移，复用的。
+
+
+docker commit -m ="提交的描述信息"  -a="作者"  容器id 目标镜像名字：标签  
+
+***************************************************
+docker run -it ubuntu /bin/bash
+apt-get update
+apt-get -y install vim 
+新打开一个窗口  docker ps 6f413cdb0540
+docker commit -m="with vim" -a="xxx" 6f413cdb0540  myubuntu:1.2
+sha256:a2178fb15d8d820c399e73c919e2bae6ad2d2ffccdd61fe2a592e33f360c0f47
+
+docker images  新创建的镜像就有了
 
  
