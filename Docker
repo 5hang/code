@@ -71,4 +71,63 @@ sudo systemctl restart docker
  *************************************************************
  
  
+ docker 常用命令
+ 帮助启动类：
+           systemctl start docker
+           systemctl stop docker
+           systemctl restart docker 
+           systemctl status docker 
+           systemctl enable docker
+           docker info 
+           docker --help
+ 
+ 镜像命令类：
+************** docker images   -a 列出本地所有镜像，-q只显示镜像的id
+ REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   latest    feb5d9fea6a5   12 months ago   13.3kB
+ 仓库源          版本        
+
+************** docker search xxx            搜索远程仓库是否有某个镜像，                                  官方认证了
+ [root@192 zhangsan]# docker search hello-world
+NAME                                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+hello-world                                Hello World! (an example of minimal Dockeriz…   1859      [OK]       
+kitematic/hello-world-nginx                A light-weight nginx container that demonstr…   152                  
+tutum/hello-world                          Image to test docker deployments. Has Apache…   89                   [OK]
+dockercloud/hello-world                    Hello World!                                    19                   [OK]
+crccheck/hello-world                       Hello World web server in under 2.5 MB          15                   [OK]
+vad1mo/hello-world-rest                    A simple REST Service that echoes back all t…   5                    [OK]
+rancher/hello-world                                                                        4                    
+ppc64le/hello-world                        Hello World! (an example of minimal Dockeriz…   2                    
+ansibleplaybookbundle/hello-world-db-apb   An APB which deploys a sample Hello World! a…   2                    [OK]
+thomaspoignant/hello-world-rest-json       This project is a REST hello-world API to bu…   1                    
+ansibleplaybookbundle/hello-world-apb      An APB which deploys a sample Hello World! a…   1                    [OK]
+strimzi/hello-world-producer                                                               0                    
+armswdev/c-hello-world                     Simple hello-world C program on Alpine Linux…   0                    
+strimzi/hello-world-consumer                                                               0                    
+businessgeeks00/hello-world-nodejs                                                         0                    
+koudaiii/hello-world                                                                       0                    
+freddiedevops/hello-world-spring-boot                                                      0                    
+strimzi/hello-world-streams                                                                0                    
+tacc/hello-world                                                                           0                    
+garystafford/hello-world                   Simple hello-world Spring Boot service for t…   0                    [OK]
+tsepotesting123/hello-world                                                                0                    
+kevindockercompany/hello-world                                                             0                    
+dandando/hello-world-dotnet                                                                0                    
+okteto/hello-world                                                                         0                    
+rsperling/hello-world3                                                                     0       
+************** docker pull 镜像名字ID：TAG
+  docker pull redis:6.2
+  docker pull ubuntu
+  
+************** docker system df 查看镜像容器占用空间
+
+
+************** docker rmi xxx  删除本地的镜像
+docker rmi -f  IMAGE ID
+docker rmi -f  hello-world
+ 容器命令：
+ 
+ 
+ 
+ 
  
