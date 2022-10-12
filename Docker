@@ -91,43 +91,56 @@ hello-world   latest    feb5d9fea6a5   12 months ago   13.3kB
  [root@192 zhangsan]# docker search hello-world
 NAME                                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
 hello-world                                Hello World! (an example of minimal Dockeriz…   1859      [OK]       
-kitematic/hello-world-nginx                A light-weight nginx container that demonstr…   152                  
-tutum/hello-world                          Image to test docker deployments. Has Apache…   89                   [OK]
-dockercloud/hello-world                    Hello World!                                    19                   [OK]
-crccheck/hello-world                       Hello World web server in under 2.5 MB          15                   [OK]
-vad1mo/hello-world-rest                    A simple REST Service that echoes back all t…   5                    [OK]
-rancher/hello-world                                                                        4                    
-ppc64le/hello-world                        Hello World! (an example of minimal Dockeriz…   2                    
-ansibleplaybookbundle/hello-world-db-apb   An APB which deploys a sample Hello World! a…   2                    [OK]
-thomaspoignant/hello-world-rest-json       This project is a REST hello-world API to bu…   1                    
-ansibleplaybookbundle/hello-world-apb      An APB which deploys a sample Hello World! a…   1                    [OK]
-strimzi/hello-world-producer                                                               0                    
-armswdev/c-hello-world                     Simple hello-world C program on Alpine Linux…   0                    
-strimzi/hello-world-consumer                                                               0                    
-businessgeeks00/hello-world-nodejs                                                         0                    
-koudaiii/hello-world                                                                       0                    
-freddiedevops/hello-world-spring-boot                                                      0                    
-strimzi/hello-world-streams                                                                0                    
-tacc/hello-world                                                                           0                    
-garystafford/hello-world                   Simple hello-world Spring Boot service for t…   0                    [OK]
-tsepotesting123/hello-world                                                                0                    
-kevindockercompany/hello-world                                                             0                    
-dandando/hello-world-dotnet                                                                0                    
-okteto/hello-world                                                                         0                    
-rsperling/hello-world3                                                                     0       
+                                                                   0       
 ************** docker pull 镜像名字ID：TAG
   docker pull redis:6.2
   docker pull ubuntu
+  docker pull centos
   
 ************** docker system df 查看镜像容器占用空间
 
 
 ************** docker rmi xxx  删除本地的镜像
-docker rmi -f  IMAGE ID
-docker rmi -f  hello-world
+      docker rmi -f  IMAGE ID
+      docker rmi -f  hello-world
+      
  容器命令：
+    docker run xx  启动交互式容器
+
+    --name = 容器的名字  给容器起一个名字 ，通过docker ps 可以查看到的名字
+    -d：     后台运行容器 并且返回容器ID，
  
+    -i:  以交互模式运行容器，通常和-t 同时使用的
+    -t：为容器分配一个伪输入终端，
+    
+    -P:随机端口
+    -p：指定端口映射  -p  8080:80
  
+root@192 zhangsan]# docker run -it  ubuntu /bin/bash   启动交互式容器
+root@0a2384bf7fed:/# exit 
+
+docker run -it  --name="aaa"  ubuntu  /bin/bash  
+
+docker ps 列出所有运行中的实例
+[root@192 zhangsan]# docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES
+ae0591d1d13e   ubuntu    "/bin/bash"   2 seconds ago   Up 2 seconds             boring_williamson
+
+ 容器的推出机制：
+   run进去的容易 exit 推出，容器会停止的
+   ctrl+p+q： 这种方式推出，容器不会停止
+   
+ 启动已经停止运行的容器：docker start 容器id或者名字
+ 重启容器：docker restart 容器id或者名字
+ 停止容器：docker stop   容器id或者名字
+ 强制停止容器： docker kill 容器id或者名字
+ 删除停止运行的容器：docker rm 容器id或者名字
  
- 
+docker ps -n 2
+CONTAINER ID   IMAGE     COMMAND                 CREATED         STATUS                     PORTS     NAMES
+39612d297e08   ubuntu    "/bin/bash"             6 minutes ago   Exited (0) 5 minutes ago             aaa
+70321f543dad   ubuntu    "-name=000 /bin/bash"   7 minutes ago   Created                              xenodochial_ganguly
+
+
+
  
