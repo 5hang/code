@@ -99,6 +99,8 @@ hello-world                                Hello World! (an example of minimal D
   
 ************** docker system df 查看镜像容器占用空间
 
+**************   删除本地所有镜像
+docker rmi -f $(docker images -qa)
 
 ************** docker rmi xxx  删除本地的镜像
       docker rmi -f  IMAGE ID
