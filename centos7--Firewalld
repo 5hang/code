@@ -1,0 +1,50 @@
+ 
+systemctl mask iptables
+Created symlink from /etc/systemd/system/iptables.service to /dev/null.
+systemctl unmask firewalld
+
+systemctl enable firewalld
+systemctl status firewalld
+
+firewalld 规则：
+1：系统存在 zone1 zone2 zone3  ....好多个zone
+
+2： ）通过设置网卡关联zone  --》eth1  eth2
+    ）通过源网段关联zone    --》192.167.0.1/32 
+    ）否则进入default zone
+
+
+***************************查看所有的zone***************************
+    firewall-cmd --list-all-zones
+
+trusted
+  target: ACCEPT
+work
+  target: default
+  
+  
+  查看默认zone
+  firewall-cmd --get-default-zone
+  
+ 
+firewall-cmd --list-all             查看所有放行的规则
+firewall-cmd --add-service=http     临时放行http服务
+firewall-cmd --remove-service=http  移除对http的放行
+
+firewall-cmd --add-service=http --permanent  永久写入配置文件
+firewall-cmd --reload                         重新加载服务生效
+    --per 是缩写
+firewall-cmd --add-port=2222/tcp --per      对端口tcp/2222放行
+firewall-cmd --remove-port=2222/tcp --per   移除对端口tcp/2222放行
+firewall-cmd --reload  
+
+*************************查看可以用服务名字放行的服务有哪些
+firewall-cmd --get-services
+RH-Satellite-6 RH-Satellite-6-capsule amanda-client amanda-k5-client amqp amqps apcupsd audit bacula bacula-client bgp bitcoin bitcoin-rpc bitcoin-testnet bitcoin-testnet-rpc ceph ceph-mon cfengine condor-collector ctdb dhcp dhcpv6 dhcpv6-client distcc dns docker-registry docker-swarm dropbox-lansync elasticsearch etcd-client etcd-server finger freeipa-ldap freeipa-ldaps freeipa-replication freeipa-trust ftp ganglia-client ganglia-master git gre high-availability http https imap imaps ipp ipp-client ipsec irc ircs iscsi-target isns jenkins kadmin kerberos kibana klogin kpasswd kprop kshell ldap ldaps libvirt libvirt-tls lightning-network llmnr managesieve matrix mdns minidlna mongodb mosh mountd mqtt mqtt-tls ms-wbt mssql murmur mysql nfs nfs3 nmea-0183 nrpe ntp nut openvpn ovirt-imageio ovirt-storageconsole ovirt-vmconsole plex pmcd pmproxy pmwebapi pmwebapis pop3 pop3s postgresql privoxy proxy-dhcp ptp pulseaudio puppetmaster quassel radius redis rpc-bind rsh rsyncd rtsp salt-master samba samba-client samba-dc sane sip sips slp smtp smtp-submission smtps snmp snmptrap spideroak-lansync squid ssh steam-streaming svdrp svn syncthing syncthing-gui synergy syslog syslog-tls telnet tftp tftp-client tinc tor-socks transmission-client upnp-client vdsm vnc-server wbem-http wbem-https wsman wsmans xdmcp xmpp-bosh xmpp-client xmpp-local xmpp-server zabbix-agent zabbix-server
+
+
+
+
+
+
+
