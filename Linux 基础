@@ -20,3 +20,16 @@
 /usr   用户目录
 /var   放各种日志
 p1hang  azp33d...
+
+
+常见网络服务的=端口　　ｎｅｔｓｔａｔ　－ｌｎｔｐ
+ 
+ FTP:　　　－－－２０，２１
+ SSH　　　　－－－２２
+ Telnet　　　　－－－２３
+ SMTP　　　　－－－２５
+ DNS　　　　－－－５３
+ HTTP　　　　－－－８０
+ HTTPS　　　　－－－４４３
+ MYQSQL　  　－－－３３０６
+ WindowsRDP　－－－　3389
