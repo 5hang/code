@@ -24,5 +24,49 @@ httpOnly:是否正对http协议的
 
 val，err:= context.Cookie("key")
 
-session操作：
+
+session操作： 
+gin-session:插件的地址：https://github.com/p1hang/sessions
 gin 框架默认不支持session 需要使用插件
+
+func NewStore(size int ,network,address,password string,,,,,)
+password:使用redis做容器使用的密码，没有特殊传入""
+[]byte("secret") session加密密钥
+
+package main
+
+import (
+  "github.com/bradfitz/gomemcache/memcache"
+  "github.com/gin-contrib/sessions"
+  "github.com/gin-contrib/sessions/memcached"
+  "github.com/gin-gonic/gin"
+)
+
+func main() {
+  r := gin.Default()
+  // session 存储使用的容器 支持多种容器，
+  store := memcached.NewStore(memcache.New("localhost:11211"), "", []byte("secret"))
+  
+  // store.Options();//设置临时session
+  r.Use(sessions.Sessions("mysession", store))
+
+  r.GET("/incr", func(c *gin.Context) {
+    session := sessions.Default(c)
+    var count int
+    v := session.Get("count")
+    if v == nil {
+      count = 0
+    } else {
+      count = v.(int)
+      count++
+    }
+    session.Set("count", count)
+    session.Save()
+    c.JSON(200, gin.H{"count": count})
+  })
+  r.Run(":8000")
+}
+
+获取session：
+ v:=s.Get("itcast")
+ fmt.Println("get session:   ",v.(string))
