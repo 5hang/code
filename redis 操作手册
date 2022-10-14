@@ -16,6 +16,7 @@ func main() {
 	defer conn.Close()
 	reply, err := conn.Do("set", "id", "1001")
 	r, e := redis.String(reply, err)
+	=> Ok ， nil
 	fmt.Println(r, e)
 }
 
