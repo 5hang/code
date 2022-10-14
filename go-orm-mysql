@@ -1,0 +1,519 @@
+# ORM 框架
+
+## ORM 框架介绍
+
+- ORM：Object  Relational   Mapping  —— 对象关系映射。
+ 
+
+- 作用：
+    - 通过操作结构体对象，来达到操作数据库表的目的。
+    - 通过结构体对象，来生成数据库表。
+- 优点：
+    - SQL有可能 比较复杂。（Oracle --- 子查询 -- 嵌套）ORM 操作数据库，不需要使用 SQL
+    - 不同开发者，书写的 SQL 语句执行效率不同。
+
+- go语言支持的 ORM：
+    - gORM：http://gorm.book.jasperxu.com/
+    - xORM：
+
+# gorm 连接数据库、建表
+
+- grom 操作的都是表、表数据。—— 不能操作数据库！使用SQL配合完成。
+
+    ```sql
+    create database 库名 charset=utf8;
+    ```
+
+    
+
+## 回顾MySQL
+
+1. 确认mysql服务，启动：` ps xua | grep mysql`
+2. 连接MySQL数据库： mysql -uroot -p123456
+3. 查看数据库：show databases;
+4. 删除数据库：drop database t1;    t1 代表库名。
+5. 选择数据库、查看表：use 数据库名；     show tables；
+6. 创建数据库： create database test charset=utf8;
+
+
+
+## gORM 操作 MySQL 数据库
+
+### 创建表
+
+1. 连接数据库
+
+    ```go
+    import (
+    	"github.com/jinzhu/gorm"
+    	_ "github.com/go-sql-driver/mysql"   //"_" 代码不直接使用包, 底层链接要使用!
+    	"fmt"
+    )
+    // mysql: 数据库的驱动名
+    // 链接数据库 --格式: 用户名:密码@协议(IP:port)/数据库名？xxx&yyy&
+    conn, err := gorm.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/test")
+    if err != nil {
+        fmt.Println("gorm.Open err:",err)
+        return
+    }
+    defer conn.Close()
+    ```
+
+2. 创建数据库表。 ——不能使用gorm创建数据库。  提前使用 SQL语句，创建好想要的数据库。
+
+    AutoMigrate()  创建表。默认创建的表 为 复数类型。—— 自动添加 “s” 
+
+    在创建之前， 添加 `	conn.SingularTable(true)` 可以创建非复数表名的表。
+
+    ```go
+    // 不要复数表名
+    conn.SingularTable(true)
+    
+    // 借助 gorm 创建数据库表.
+    fmt.Println(conn.AutoMigrate(new(Student)).Error)
+    ```
+
+3. 查看
+
+    ```shell
+    mysql> desc student;
+    +-------+--------------+------+-----+---------+----------------+
+    | Field | Type         | Null | Key | Default | Extra          |
+    +-------+--------------+------+-----+---------+----------------+
+    | id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+    | name  | varchar(255) | YES  |     | NULL    |                |
+    | age   | int(11)      | YES  |     | NULL    |                |
+    +-------+--------------+------+-----+---------+----------------+
+    
+    ```
+
+### MySQL 包的 init 方法
+
+1.  `_ "github.com/go-sql-driver/mysql"` 导入包时， “_” ,表示，驱使go系统，在main() 函数被调用之前，自动调用 init() 函数。
+2. go语言中有两个特殊函数：  —— 首字母小写，包外可见 。
+    1. main()   —— 项目的入口函数 
+    2. init() —— 当导包，但没有在程序中使用。 在main() 调用之前，自动被调用。
+        - 查看：光标置于 MySQL包的 “mysql” 上。 使用 Ctrl-鼠标左键。 看到源码。 在 driver.go 底部包含 init() 函数的 定义。
+        - init() 作用：实现注册 MySQL 驱动。
+
+3. 测试：
+
+    test2/ 中
+
+    ```go
+    --- 创建 test2/ 目录， 在内部添加 init()
+    
+    package test2
+    
+    import "fmt"
+    // 首字母小写函数, 包作用域, 不能跨包使用!
+    func init()  {
+    	fmt.Println("测试 init 函数 ....")
+    }
+    ```
+
+    test/ 中
+
+    ```go
+    import (
+    	"github.com/jinzhu/gorm"
+    	_ "bj38web/web/test2"   //"_" 代码不直接使用包, 底层链接要使用!
+    	"fmt"
+    )
+    func main()  {
+    	fmt.Println("----this is main ---")
+    }
+    输出：	测试 init 函数 ....
+    再输出：----this is main ---
+    ```
+    
+
+运行结果： init 函数 会先于 main() 函数被调用！！！
+
+### gorm的连接池
+
+1.  ```go
+    -- 默认， grom框架创建好的MySQL数据库连接 conn ，就是一个连接池的句柄。
+    conn, err := gorm.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/test")
+    
+    ```
+
+2. 初始化全局变量， 接收句柄
+
+    ```go
+    // 创建全局连接池句柄
+    var GlobalConn *gorm.DB
+    
+    GlobalConn = conn
+    ```
+    
+3. 修改连接池初始属性
+
+    ```go
+    // 初始数
+    GlobalConn.DB().SetMaxIdleConns(10)
+    // 最大数
+    GlobalConn.DB().SetMaxOpenConns(100)
+    ```
+
+4. 使用连接池句柄
+
+    ```go
+    --- 对比redis连接池：不需要使用 Get() 方法，取一条连接。
+    // 不要复数表名
+    GlobalConn.SingularTable(true)
+    
+    // 借助 gorm 创建数据库表.
+    fmt.Println(GlobalConn.AutoMigrate(new(Student)).Error)
+    ```
+
+
+
+# gorm 操作数据库数据
+
+## gorm 插入数据
+
+```go
+// insert into student(name, age) values('zhangsan', 100)
+
+func InsertData()  {
+	// 先创建数据 --- 创建对象
+	var stu Student
+	stu.Name = "zhangsan"
+	stu.Age = 100
+
+	// 插入(创建)数据
+	fmt.Println(GlobalConn.Create(&stu).Error)
+}
+```
+
+使用注意事项：
+
+- 插入数据时，使用的 create() 函数，传参时，必须传入 &对象。 如果遗漏 “&” 会报错：
+ 
+- 要保证 ，在插入数据库时，`GlobalConn.SingularTable(true)` 生效。代表不使用 复数表名。
+
+
+
+## gorm 查询数据
+
+### 简单查询方法：
+
+ 1. First(&suer):
+
+     - 获取 user 表中的第一条数据
+
+        ```go
+        func SearchData()  {
+        	var stu Student
+        	GlobalConn.First(&stu)
+        	fmt.Println(stu)
+        }
+        ```
+
+    - 相当于SQL：` SELECT * FROM student ORDER BY id LIMIT 1;`
+
+    - 只查询 name、age 不查询其他值：
+
+        ```go
+        GlobalConn.Select("name, age").First(&stu)
+        ```
+
+ 2. Last(&user)
+
+     - 获取 user 表中的最后一条数据
+     - 相当于SQL：` SELECT * FROM users ORDER BY id DESC LIMIT 1`
+
+ 3. Find(&user)
+
+     - 获取 user 表中的所有数据。
+
+        ```go
+        var stu []Student		// 改为切片
+        GlobalConn.Select("name, age").Find(&stu)   // Find() 查询多条
+        ```
+
+    - 相当于SQL：`select name, age from student;`
+
+### where 子句使用
+
+- select name, age from student where name = ‘lisi’;
+
+    ```go
+    GlobalConn.Select("name, age").Where("name = ?", "lisi").Find(&stu)
+    或：
+    GlobalConn.Where("name = ?", "lisi").Select("name, age").Find(&stu)
+    ```
+
+- select name, age from student where name = ‘lisi’ and age = 22; 
+
+    ```go
+    //方法1：
+    GlobalConn.Select("name, age").Where("name = ?", "lisi").
+    			Where("age = ?", 22).Find(&stu)
+    //方法2：
+    GlobalConn.Select("name, age").Where("name = ? and age = ?", "lisi", 22).Find(&stu)
+    ```
+
+    
+
+## gorm 更新数据
+
+1. Save(): 根据主键更新。 如果数据没有指定主键，不更新 ，变为 “插入”操作。
+2. Update(): 更新一个字段。
+3. Updates(): 更新多个字段。
+
+### save
+
+- 插入：
+
+    - ```go
+        func UpdateData()  {
+        	var stu Student
+        	stu.Name = "wangwu"
+        	stu.Age = 99			// 没有指定 id -- 没有主键! --- 插入
+        	fmt.Println(GlobalConn.Save(&stu).Error)
+        }
+        ```
+
+    - select * from student;
+
+        ```shell
+        mysql> select * from student;
+        +----+----------+------+
+        | id | name     | age  |
+        +----+----------+------+
+        |  1 | zhangsan |  100 |
+        |  2 | lisi     |   18 |
+        |  3 | lisi     |   18 |
+        |  4 | lisi     |   18 |
+        |  5 | lisi     |   18 |
+        |  6 | lisi     |   22 |
+        |  7 | wangwu   |   99 |
+        +----+----------+------+
+        ```
+
+- 更新：
+
+    - ```go
+        func UpdateData()  {
+        	var stu Student
+        	stu.Name = "wangwu"
+        	stu.Age = 77
+        	stu.Id = 4			//指定 id -- 更新操作!
+        	fmt.Println(GlobalConn.Save(&stu).Error)
+        }
+        ```
+
+    - 查询：
+
+        ```shell
+        mysql> select * from student;
+        +----+----------+------+
+        | id | name     | age  |
+        +----+----------+------+
+        |  1 | zhangsan |  100 |
+        |  2 | lisi     |   18 |
+        |  3 | lisi     |   18 |
+        |  4 | wangwu   |   77 |
+        |  5 | lisi     |   18 |
+        |  6 | lisi     |   22 |
+        |  7 | wangwu   |   99 |
+        +----+----------+------+
+        7 rows in set (0.01 sec)
+        ```
+
+### update
+
+```go
+fmt.Println(GlobalConn.Model(new(Student)).Where("name = ?", "zhaoliu").
+            Update("name", "lisi").Error)
+
+Model(new(Student): 指定更新 “student” 表
+Where("name = ?", "zhaoliu")： 指定过滤条件。 
+Update("name", "lisi").Error)：指定 把 “zhaoliu” 更新成 “lisi”    
+```
+
+### updates
+
+```go
+fmt.Println(GlobalConn.Model(new(Student)).Where("name = ?", "lisi").
+            Updates(map[string]interface{}{"name":"liuqi", "age":77}).Error)
+```
+
+
+
+## grom 删除数据
+
+### 删除
+
+- 物理删除。真正的执行 Delete。
+
+### 软删除
+
+- 逻辑删除。不真正删。不执行Delete。 —— 数据无价的！
+    - 创建表时，在表中添加一个 “删除字段” 。当需要删除时，更新 “删除字段”， 更新为 ：true
+    - 查询时，不查询 “删除字段” 为 null 的值。
+    - 举例：淘宝，删除订单。 手机，删除图片。
+
+- 实现 软删除：
+
+    - 创建表：
+
+    ```go
+    // 创建全局结构体
+    type Student struct {
+    	gorm.Model		// go语言中, 匿名成员 --- 继承! Student 继承 Model
+    	Name string
+    	Age int
+    }
+    --- 在 “Model” 上，Ctrl-B 跳转至 Model 类定义。
+    type Model struct {
+    	ID        uint `gorm:"primary_key"`
+    	CreatedAt time.Time
+    	UpdatedAt time.Time
+    	DeletedAt *time.Time `sql:"index"`
+    }
+    --- Model 表由 mysql自动维护，不需要我们手动维护。
+    ```
+
+    - 执行软删除：
+
+        ```go
+        --- 使用 Delete() 参数，指定要删除的数据所在表的表名。
+        fmt.Println(GlobalConn.Where("name = ?", "lisi").Delete(new(Student)).Error)
+        ```
+
+    - 验证：
+
+        1.  select * from student；  依然能看到 “lisi” 相关数据。 但是 。delete_at 字段。被填入数据。
+
+        2.  在 gorm 框架中，执行 查询语句：
+
+            ```go
+            func SearchData()  {
+                var stu []Student
+            	GlobalConn.Find(&stu)
+            	fmt.Println(stu)
+            }
+            --- 查询结果为： [ ]  ---- "软删除" 成功！
+            ```
+
+    - 想 查询 “软删除”的数据：
+
+        ```go
+        GlobalConn.Unscoped().Find(&stu)
+        ```
+
+    - 想 实现 “物理删除”
+
+        ```go
+        --- 借助 Unscoped() 执行删除。
+        GlobalConn.Unscoped().Where("name = ?", "lisi").Delete(new(Student))
+        ```
+
+        
+
+### MySQL 8小时 时区问题
+
+- MySQL默认使用的时间 ： 美国 东 8 区 时间 。 —— 北京时间 —— 差 8 小时。
+
+- 在连接数据库时，添加属性：`?parseTime=True&loc=Local` 
+
+    ```go
+    conn, err := gorm.Open("mysql,                "root:123456@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local")
+    ```
+
+- 再执行SQL语句、gorm访问MySQL 使用 北京时间。
+
+
+
+# gorm 设置表属性
+
+## 修改表字段大小
+
+```go
+// 创建全局结构体
+type Student struct {
+	Id int
+	Name string		`gorm:"size:50"`	
+    // string -- varchar。 默认大小255.  可以在创建表时，指定大小。
+	Age int
+}
+```
+
+- 结论：修改表属性，只能在第一次建表的时候，有效！或者给表增加新字段的时候，有效！其他场景，修改表属性 ，在 gorm 操作中，无效！
+
+```go
+// 创建全局结构体
+type Student struct {
+	Id    int
+	Name  string `gorm:"size:100;default:'xiaoming'"`
+	Age   int
+	Class int    `gorm:"not null"`
+}
+```
+
+
+
+## 设置时间
+
+- 默认MySQL数据库 有 3 种时间：
+    - date：
+    - datetime：
+    - timeStamp：时间戳。 ——  gorm 中，只有 timeStamp
+
+- 如果必须使用 MySQL 数据库特有的 “数据类型”， 使用 “type” 关键字来设置。
+
+
+```go
+// 创建全局结构体
+type Student struct {
+	Id    int
+	Name  string    `gorm:"size:100;default:'xiaoming'"`
+	Age   int
+	Class int       `gorm:"not null"`
+	Join  time.Time `gorm:"type:timestamp"`// 创建 Student 表指定 timestamp类型。
+}
+```
+
+
+
+# 项目中使用表 的创建
+
+1. 在 项目的 web/model/ 下 创建  model.go 文件。
+
+2. 参照讲义《微服务项目讲义1.md》中 2.2.2 小节，将创建表的代码 添加到  model.go 。
+
+3. 使用 SQL语句创建 数据库 search_house。修改 InitDb() 函数。同时，指定MySQL使用的时间。初始化全局连接池句柄。
+
+    ```go
+    // 创建 数据库链接句柄
+    var GlobalConn *gorm.DB
+    
+    func InitDb() (*gorm.DB, error) {
+    	db, err := gorm.Open("mysql",
+    "root:123456@tcp(127.0.0.1:3306)/search_house?parseTime=True&loc=Local")
+    
+    	if err == nil {
+    		// 初始化 全局连接池句柄
+    		GlobalConn = db
+    		GlobalConn.DB().SetMaxIdleConns(10)
+    		GlobalConn.DB().SetConnMaxLifetime(100)
+    
+    		db.SingularTable(true)
+    		db.AutoMigrate(new(User), new(House), new(Area), new(Facility), new(HouseImage), new(OrderHouse))
+    		return db, nil
+    	}
+    	return nil, err
+    }
+    ```
+
+4. 将  InitDb()  在 web/main.go 中 调用！
+
+    ```go
+    // 初始化 MySQL 链接池
+    model.InitDb()
+    ```
+
+5. 运行 web/main.go , 创建 项目中需要使用的表。
