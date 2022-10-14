@@ -1,6 +1,24 @@
 Remote dictoinary server    检索数据，远程字典服务     6379
 
-*******************************************go 语言操作reids************************************
+*******************************************go 语言操作reids*************************************************************************************************
+go get github.com/gomodule/redigo/redis
+package main
+import (
+	"fmt"
+	"github.com/gomodule/redigo/redis"
+)
+func main() {
+	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
+	if err != nil {
+		fmt.Println("err:", err)
+		return
+	}
+	defer conn.Close()
+	reply, err := conn.Do("set", "id", "1001")
+	r, e := redis.String(reply, err)
+	fmt.Println(r, e)
+}
+
 1:链接数据库  api文档中以Dial 开头
 2:操作数据库  Do()函数
 3:回复助手
