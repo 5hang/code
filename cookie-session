@@ -1,0 +1,28 @@
+http 协议 三个版本
+
+http1.0: 无状态，短链接
+http1.1: 可以记录状态 
+http2.0: 支持长连接  connection:keep-alive
+
+cookie session 一定时间存储用户的信息
+cookie 不安全：数据存储浏览器上，session存储在服务器中，一般是临时session ，回话结束
+               浏览器关闭，session被干掉了
+
+func (c *Context)SetCookie(name,value,maxAge int,path,domin string ,secure, httpOnly bool)
+
+name: 名称 相当于key
+value: 内容
+maxAge: 最大生命周期
+        =0：表示没指定该属性
+        <0: 表示删除
+        >0: 设置时间  单位 s
+        
+path：   路径  通常 ""
+domain： 域名  ip 地址
+secure： 设置是否安全保护， true:不能在地址栏查看，false：可以在地址栏查看的
+httpOnly:是否正对http协议的
+
+val，err:= context.Cookie("key")
+
+session操作：
+gin 框架默认不支持session 需要使用插件
