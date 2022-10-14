@@ -13,7 +13,7 @@
     - 不同开发者，书写的 SQL 语句执行效率不同。
 
 - go语言支持的 ORM：
-    - gORM：http://gorm.book.jasperxu.com/
+    - gORM：http://gorm.book.jasperxu.com/  学习稳当
     - xORM：
 
 # gorm 连接数据库、建表
