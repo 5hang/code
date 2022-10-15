@@ -1,0 +1,65 @@
+
+
+yum update -y
+swapoff -a
+vi /etc/fstab 注释swap
+
+关闭防火墙
+systemctl stop firewalld
+systemctl disable firewalld 
+
+关闭setlinux
+sed -i 'ecforcing/disabled'  /etc/setlinux/config
+setenforce 0
+
+设置主机名
+hostnamectl set-hostname name
+执行bash  命令窗口名字就变化了
+
+在master节点  vi /etc/host
+192.168.13.134 k8s-master
+192.168.13.135 k8s-node1
+192.168.13.136 k8s-node2
+
+将桥接ipv4 流量传到iptables的链
+cat > /etc/sysctl.d/k8s.conf  << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables  = 1
+EOF
+
+sysctl --system   生效
+
+同步时间
+yum install ntpdate -y
+ntpdate  time.windows.com
+
+
+3.2添加阿里云YUM软件源
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+       http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+
+3.3安装kubeadm, kubelet和kubectl 由于版本更新频繁；这里指定版本号部署：
+
+yum install -y kubelet-1.19.0 kubeadm-1.19.0 kubect1-1.19.0 
+systemctl enable kubelet
+
+*******************************************.部署Kubernetes Master*******************************************.
+
+kubeadm init  --apiserver-advertise-address=192.168.13.134  --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version v1.19.0  --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16  --ignore-preflight-errors=a11
+
+  
+
+
+
+
+
+
