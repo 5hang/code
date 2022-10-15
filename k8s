@@ -52,14 +52,31 @@ EOF
 yum install -y kubelet-1.19.0 kubeadm-1.19.0 kubect1-1.19.0 
 systemctl enable kubelet
 
+*********************************************************************
+依赖的组件
+master: kube-apiserver  scheduler controller-manager etcd
+node:   kubelet  kube-proxy
+
 *******************************************.部署Kubernetes Master*******************************************.
 
 kubeadm init  --apiserver-advertise-address=192.168.13.134  --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version v1.19.0  --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16  --ignore-preflight-errors=a11
 
-  
+你需要执行下面步骤
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+查看运行节点
+kubectl get node
 
-
-
-
-
+******************kubeadm init 初始化工作：
+1：[preflight]环境检查  拉取镜像 kubeadm config images pull
+2:[certs] 生成k8s证书 和etcd证书 ./etc/kubernetes/pki
+3:[kubeconfig] 生成kubeconfig文件
+4:[kubelet-start]生成kubelet配置文件
+5:[control-plane]部署管理节点组件，用镜像启动容器， kubectl get pods -n kube-system
+6:[etcd] 部署etcd数据库，用镜像启动容器
+7:[upload-config][kubelet][upload-certs]上传配置文件到k8s中
+8:[mark-control-plane]给管理接节点增加一个标签 node-role.kubeletes.io/master ='' ,再添加一个污点[node-role.kubernetes.io/master:NoSchedule]
+9:[bootstrap-token]自动为kubelete 颁发证书
+10:[addons]部署插件，CoreNDS,kube-proxy
