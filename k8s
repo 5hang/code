@@ -64,8 +64,7 @@ ntpdate  time.windows.com
 
 ************安装docker
  
-3.2添加阿里云YUM软件源
-
+************添加阿里云YUM软件源 + 安装kubeadm, kubelet和kubectl 由于版本更新频繁；这里指定版本号部署：
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -76,20 +75,15 @@ repo_gpgcheck=0
 gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
-
-3.3安装kubeadm, kubelet和kubectl 由于版本更新频繁；这里指定版本号部署：
-
-yum install -y kubelet-1.19.0 kubeadm-1.19.0 kubect1-1.19.0 
+ 
+yum install -y kubelet-1.18.0 kubeadm-1.18.0 kubectl-1.18.0 
 systemctl enable kubelet
 
-*********************************************************************
-依赖的组件
-master: kube-apiserver  scheduler controller-manager etcd
-node:   kubelet  kube-proxy
+ 
 
 *******************************************.部署Kubernetes Master*******************************************.
 
-kubeadm init  --apiserver-advertise-address=192.168.13.134  --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version v1.19.0  --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16  --ignore-preflight-errors=a11
+kubeadm init  --apiserver-advertise-address=192.168.13.137  --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version v1.18.0  --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16  
 
 你需要执行下面步骤
 mkdir -p $HOME/.kube
@@ -98,6 +92,10 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 查看运行节点
 kubectl get node
+
+*************在node节点执行
+kubeadm join 192.168.13.137:6443 --token a5essn.s8mcoa70syle85pt \
+    --discovery-token-ca-cert-hash sha256:a1c4f35db0c81c82b11d45530aeea8924bf28b930bbc5a657f504d6335523eb9
 
 ******************kubeadm init 初始化工作：
 1：[preflight]环境检查  拉取镜像 kubeadm config images pull
