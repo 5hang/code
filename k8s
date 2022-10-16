@@ -96,6 +96,15 @@ kubectl get node
 *************在node节点执行
 kubeadm join 192.168.13.137:6443 --token a5essn.s8mcoa70syle85pt \
     --discovery-token-ca-cert-hash sha256:a1c4f35db0c81c82b11d45530aeea8924bf28b930bbc5a657f504d6335523eb9
+    
+    
+**************部署 CNI网络插件
+1：kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+2：如果上门的方式连不上  可以执行下载后的文件  kubectl apply -f ./kube-flannel.yml             
+                 
+kubectl get pods -n kube-system 
+kubectl get node     
+
 
 ******************kubeadm init 初始化工作：
 1：[preflight]环境检查  拉取镜像 kubeadm config images pull
