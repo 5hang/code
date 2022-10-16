@@ -62,7 +62,8 @@
 ----------------------前8步是操作系统的初始化操作的-----------------------------
 
 ----009):安装docker
- 
+         systemctl start  docker
+         systemctl enable docker
  
 ----010):添加阿里云YUM软件源 + 安装kubeadm, kubelet和kubectl 由于版本更新频繁；这里指定版本号部署：
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
