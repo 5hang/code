@@ -80,8 +80,8 @@ systemctl enable kubelet
 
  
 
-*******************************************.部署Kubernetes Master*******************************************.
-----011):
+  
+----011):  ！！！仅仅master节点执行
           kubeadm init  --apiserver-advertise-address=192.168.13.137  --image-repository registry.aliyuncs.com/google_containers  --kubernetes-version v1.18.0  --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16  
 
 你需要执行下面步骤
@@ -92,12 +92,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 查看运行节点
 kubectl get node
 
-----012):在node节点执行
+----012): ！！！仅仅node节点执行
 kubeadm join 192.168.13.137:6443 --token a5essn.s8mcoa70syle85pt \
     --discovery-token-ca-cert-hash sha256:a1c4f35db0c81c82b11d45530aeea8924bf28b930bbc5a657f504d6335523eb9
     
     
-----013):部署 CNI网络插件
+----013):部署 CNI网络插件  ！！！仅仅master节点执行
 1：kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 2：如果上门的方式连不上  可以执行下载后的文件  kubectl apply -f ./kube-flannel.yml             
                  
