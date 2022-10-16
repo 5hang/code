@@ -59,6 +59,7 @@
           yum install ntpdate -y
           ntpdate  time.windows.com
 
+----------------------前8步是操作系统的初始化操作的-----------------------------
 
 ----009):安装docker
  
@@ -125,6 +126,19 @@ kubectl get node
                               方式2：二进制 搭建k8s 
 *********************************************************************************
 
-
+  步骤：   
+  1：创建多虚拟机，安装linux操作系统
+  2：操作系统初始化
+  3：为etcd和apiserver 自签证书
+  4：部署etcd集群
+  5：部署master组件  kube-apiserver  kube-controller-manager kube-scheduler etcd 
+  6：部署node组件    kubelet kube-proxy  docker etcd
+  7：部署集群网络    
+  
+  
+  
+  
+  
+  
 
 
