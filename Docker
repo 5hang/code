@@ -102,6 +102,9 @@ hello-world                                Hello World! (an example of minimal D
 **************   删除本地所有镜像
 docker rmi -f $(docker images -qa)
 
+**************    删除本地停止运行的容器
+sudo docker rm $(sudo docker ps -a -q)
+
 ************** docker rmi xxx  删除本地的镜像
       docker rmi -f  IMAGE ID
       docker rmi -f  hello-world
