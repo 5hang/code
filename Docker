@@ -131,6 +131,10 @@ docker ps 列出所有运行中的实例
 CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES
 ae0591d1d13e   ubuntu    "/bin/bash"   2 seconds ago   Up 2 seconds             boring_williamson
 
+docker ps -a  列出所有的容器 包含停止运行的容器
+docker ps     列出运行的容器
+docker ps -q  列出的内容只包含名字
+
  容器的推出机制：
    run进去的容易 exit 推出，容器会停止的
    ctrl+p+q： 这种方式推出，容器不会停止
