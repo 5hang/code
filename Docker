@@ -182,6 +182,56 @@ docker分层 就是为了资源共享，方便迁移，复用的。
 docker commit -m ="提交的描述信息"  -a="作者"  容器id 目标镜像名字：标签  
 
 ***************************************************
+-------------------------------------- 宿主机：容器  之间的路径 数据共享
+docker run -it --privileged=true  -v /tmp/host_data:/tmp/docker_data --name-uu1 ubuntu
+
+docker run -it --privileged=true  -v /tmp/host_data:/tmp/docker_data:rw --name-uu1 ubuntu    容器可读可写（默认）
+
+docker run -it --privileged=true  -v /tmp/host_data:/tmp/docker_data:ro --name-uu1 ubuntu    容器只读
+
+
+新建一个  容器继承  继承指定 容器的创建的规则
+docker run -it --privileged=true  --volumes-from uu1 --name u2 ubuntu
+
+docker运行tomcat  
+docker pull billygoo/tomcat8-jdk8   不用最新的版本tomcat  默认访问没有那一直猫
+docker run -d -p 8080:8080 --name tm1  billygoo/tomcat8-jdk8
+
+
+docker pull mysql:5.7
+docker run -d -p 3300:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7  简单
+docker run -d -p 3000:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  -v /tmp/mysql/data:/var/lib/mysql  -v /tmp/mysql/conf:/etc/mysql/conf.d  -e MYSQL_ROOT_PASSWORD=123456   --name mysql  mysql:5.7              正式
+
+
+这里增加的卷的配置，即使删除了docker实例  ，重新执行运行一次 ，又可以回来了
+docker中MySQL的字符编码默认配置错误需要修改的 
+*************************************************** 进入/tmp/mysql/conf
+[root@xxx conf]# vi my.cnf  
+[client]
+default_character_set=utf8
+[mysqld]
+collation_server = utf8_general_ci
+character_set_server = utf8
+***************************************************
+重启mysql 
+docker restart mysql
+
+
+> SHOW  VARIABLES LIKE 'character%';
++--------------------------+----------------------------+
+| Variable_name            | Value                      |
++--------------------------+----------------------------+
+| character_set_client     | utf8           ****            | client 和 database的必须是utf8
+| character_set_connection | utf8                       |
+| character_set_database   | utf8            ****           |
+| character_set_filesystem | binary                     |
+| character_set_results    | utf8                       |
+| character_set_server     | utf8                       |
+| character_set_system     | utf8                       |
+| character_sets_dir       | /usr/share/mysql/charsets/ |
++--------------------------+----------------------------+
+
+***************************************************
 docker run -it ubuntu /bin/bash
 apt-get update
 apt-get -y install vim 
