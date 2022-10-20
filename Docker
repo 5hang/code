@@ -153,7 +153,7 @@ docker top    容器id或者名字   ---查看容器的运行进程信息
 docker inspect 容器id或者名字  --- 查看容器的信息
 
 
-docker exec -it 83af7f5ea148  /bin/bash   重新进入或者的容易，并且交互  （默认用这个的）
+docker exec -it 83af7f5ea148  bash   重新进入或者的容易，并且交互  （默认用这个的）
 docker attach 容器id            （就是它进入后执行exit会导致容器停止）           
    exec   attach的区别：
    attach：直接进入容器启动命令的终端，不会启动新的进程，用exit推出，会导致容器的停止
@@ -233,6 +233,7 @@ docker restart mysql
 
 ***************************************************
 docker运行redis
+docker pull redis:7.0.2
 docker run -p 4000:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis:7.0.2  redis-server /etc/redis/redis.conf
 
 
