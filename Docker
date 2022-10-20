@@ -232,6 +232,10 @@ docker restart mysql
 +--------------------------+----------------------------+
 
 ***************************************************
+docker运行redis
+docker run -p 4000:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis:7.0.2  redis-server /etc/redis/redis.conf
+
+
 docker run -it ubuntu /bin/bash
 apt-get update
 apt-get -y install vim 
