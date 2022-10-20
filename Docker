@@ -204,7 +204,7 @@ docker运行tomcat
 docker pull billygoo/tomcat8-jdk8   不用最新的版本tomcat  默认访问没有那一直猫
 docker run -d -p 8080:8080 --name tm1  billygoo/tomcat8-jdk8
 
-
+docker运行mysql
 docker pull mysql:5.7
 docker run -d -p 3300:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7  简单
 docker run -d -p 3000:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  -v /tmp/mysql/data:/var/lib/mysql  -v /tmp/mysql/conf:/etc/mysql/conf.d  -e MYSQL_ROOT_PASSWORD=123456   --name mysql  mysql:5.7              正式
