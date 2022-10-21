@@ -1,0 +1,131 @@
+*********************************************************************************************************
+*********************************************************************************************************
+                          MYSQL 主从
+ *** 1): 建立mysql 主机
+ docker run -p 3307:3306  --name mysql-master   -v /tmp/mysql-master/log:/var/log/mysql  -v /tmp/mysql-master/data:/var/lib/mysql  -v /tmp/mysql-master/conf:/etc/mysql  -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7
+  
+ *** 2):修改配置
+  cd /tmp/mysql-master/conf
+  vi my.cnf
+  
+[mysqld]
+#设置server id 同一个局域网需要唯一
+server_id=101
+#指定不需要同步的数据库的名字
+binlog-ignore-db=mysql
+##开启二进制日志功能
+log-bin=mall-mysql-bin
+##设置二进制日志使用内存的大小
+binlog_cache_size=1M
+##设置二进制日志格式
+binlog_format=mixed
+##二进制日志国企清理时间，默认0，不自动清理
+expire_logs_days=7
+slave_skip_errors=1062
+  
+*** 3):重启：docker restart mysql-master
+ 
+*** 4):进入mysql-master   docker exec -it mysql-master bash
+       进mysql mysql -uroot -proot
+       
+*** 5):master 容器实例内创建数据同步用户
+    use mysql;
+    // 创建一个用户可以登录这个主机
+    CREATE USER  'slave'@'%'  IDENTIFIED   BY  '123456';
+    //   给这个用户授权
+    GRANT REPLICATION  SLAVE,REPLICATION CLIENT ON *.*  TO  'slave'@'%';
+
+
+ *** 6): 建立mysql 从机
+ docker run -p 3308:3306  --name mysql-slave   -v /tmp/mysql-slave/log:/var/log/mysql  -v /tmp/mysql-slave/data:/var/lib/mysql  -v /tmp/mysql-slave/conf:/etc/mysql  -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7
+  
+ *** 7):修改从机配置
+  cd /tmp/mysql-slave/conf
+  vi my.cnf
+  
+[mysqld]
+#设置server id 同一个局域网需要唯一
+server_id=102
+#指定不需要同步的数据库的名字
+binlog-ignore-db=mysql
+##开启二进制日志功能
+log-bin=mall-mysql-slave1-bin
+##设置二进制日志使用内存的大小
+binlog_cache_size=1M
+##设置二进制日志格式
+binlog_format=mixed
+##二进制日志国企清理时间，默认0，不自动清理
+expire_logs_days=7
+slave_skip_errors=1062
+relay_log=mall-mysql-relay-bin
+log_slave_updates=1
+read_only=1
+
+
+*** 8): 重启 从机
+docker restart mysql-slave
+
+*** 9): 进入 mysql-master 登录myslq
+mysql> show master status;
++-----------------------+----------+--------------+------------------+-------------------+
+| File                  | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
++-----------------------+----------+--------------+------------------+-------------------+
+| mall-mysql-bin.000001 |      154 |              | mysql            |                   |
++-----------------------+----------+--------------+------------------+-------------------+
+1 row in set (0.00 sec)
+
+
+*** 10): 进入 mysql-slave 登录myslq
+
+
+*** 11): 进入 mysql-slave 登录myslq        从数据库中配置主从复制
+
+master_host:       主数据库ip地址
+master_port:       主数据库端口
+master_user:       在主数据库创建用于同步数据的用户账号
+master_password:   在主数据库创建用于同步数据的用户密码
+master_log_file:   指定从数据库要复制数据的日志文件，通过查看主数据的状态，获取file参数
+master_log_pos:    指定从数据库开始从哪个位置开始复制数据，通过查看主数据的 状态，获取position参数
+master_connect_retry: 链接失败重试时间间隔 单位是秒
+
+
+change master to master_host="主机ip" ,master_user='slave' ,master_password='123456',master_port=3307,
+master_log_file='mall-mysql-bin.000001' ,master_log_pos=154,master_connect_retry=30;
+
+change master to master_host="192.168.13.134",master_user='slave',master_password='123456',master_port=3307,master_log_file='mall-mysql-bin.000001' ,master_log_pos=154,master_connect_retry=30;
+
+*** 12):  在从数据库中查看主从同步状态
+
+mysql> show slave status \G;
+*************************** 1. row ***************************
+ 
+             Slave_IO_Running: No    《《《
+            Slave_SQL_Running: No    《《《
+          
+*** 13):  在从数据库中开启主从  start slave;
+
+
+*** 14):  在从数据库中查看主从同步状态
+mysql> show slave status \G;
+*************************** 1. row ***************************
+ 
+             Slave_IO_Running: Yes    《《《
+            Slave_SQL_Running: Yes    《《《
+
+
+
+*** 15):  最终测试
+主数据库 增加 
+从数据库 查询
+
+
+
+
+
+
+
+
+
+
+
+
