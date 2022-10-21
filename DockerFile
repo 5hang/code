@@ -1,0 +1,24 @@
+构建指令：
+
+FROM：      基础镜像，当前镜像是基于哪个镜像的，指定一个基础的镜像
+MAINTAINER：留下镜像的作者大名
+RUN：       容器构建时候就运行的命令：shell格式  exec格式
+
+EXPOSE： 当前容器对外暴露的端口
+WORKDIR：指定创建容器后，终端默认进来的目录
+USER：   指定该镜像什么用户去执行，默认root
+ENV：    设置环境变量
+ADD：    将宿主机目录下的文件copy到镜像里面，自动处理url和解压文件的
+COPY：   copy文件
+VOLUME： 容器卷，保存数据的地址
+CMD：    指定容器启动后需要干的事情，支持 shell格式 exec格式的命令 ，cmd 参数会被执行命令参数替代的
+ENTRYPOINT：用来指定一个容器启动时候需要运行的命令，类似cmd指令，但是ENTRYPOINT不会被docker run 后面的
+命令覆盖，而且这些命令参数会被当做参数送给ENTRYPOINT指令指定的程序
+
+
+RUN：命令实在构建时候执行，CMD：实在run时候执行的
+
+
+实例1：
+centos7 镜像具备 vim+ifconfig+jdk8
+docker pull centos 
