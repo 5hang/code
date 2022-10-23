@@ -48,6 +48,68 @@ source hello.sh    同一个bash 环境执行
 
 
 
+算术比较运算符
+-eq  等于
+-ne  不等于
+-lt  小于
+-le   小于等于
+-gt   大于
+-ge   大于等于
+
+按照文件类型判断
+-e  文件是否存在
+-f  文件是否存在 并是一个常规的文件
+-d  文件是否存在 并是一个目录
+
+
+三目运算符
+a=15
+[root@xxx myshell]# [ $a -lt 20 ] && echo 'a<20' || echo 'a>20'
+a<20
+
+逻辑and    [ $a -lg 20   -a  $a -gt 10]   and连接
+逻辑or     [ $a -lg 20   -o  $a -gt 10]   or连接
+
+
+if 判断
+
+if [ 条件判断 ]; then
+
+fi
+
+
+if [ 条件判断 ];then
+
+elif [ 条件判断 ];then
+
+else
+
+fi
+
+
+if [ "$1"x = "$2"x ];then   这样写法 是为了防止变量不存在  给他一个默认值
+
+fi
+
+switch case：
+case $1 in
+ 1) 
+    echo "one"
+;;
+2) 
+    echo "two"
+;;
+*) 
+    echo "none"      这相当于default分支
+;;
+
+
+
+
+
+
+
+
 
 
 
