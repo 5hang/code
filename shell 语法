@@ -152,7 +152,51 @@ path: /home/zhangsan/myshell
 
 
 
+函数求和：
+#!/bin/bash
+add()
+{
+        a=$[$1+$2]
+        echo $a
+}
+a=300
+b=400
+sum=$(add $a $b )
+echo $sum
 
+
+**************************************************************************************************************
+**************************************************************************************************************
+                               执行脚本 传入目录  归档这个目录
+**************************************************************************************************************
+
+#!/bin/bash
+if [ $# -ne 1 ]
+then
+        echo "参数个数错误"
+        exit
+fi
+if [ -d $1 ]
+then
+        echo
+else
+        echo "不存在的目录"
+fi
+DIR_NAME=$(basename $1)
+DIR_PATH=$(cd $(dirname $1);pwd)
+DATE=$(date +%y%m%d)
+FILE=archive_${DIR_NAME}_$DATE.tar.gz
+DEST=/home/zhangsan/$FILE
+echo "开始归档了，，，"
+tar -czf $DEST $DIR_PATH/$DIR_NAME
+if [ $? -eq 0 ]
+then
+        echo "归档成功"
+        echo "归档文件是：$DEST"
+else
+        echo "归档失败了"
+fi
+exit
 
 
 
