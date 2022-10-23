@@ -12,6 +12,9 @@ aa
 [root@xxx myshell]# 
 
 
+ read -p "请输入一个值：" name   读取控制台的输入 赋值给name变量的
+
+
 unset xx  取消这个变量了
 
 查看系统全局环境变量
@@ -103,9 +106,49 @@ case $1 in
     echo "none"      这相当于default分支
 ;;
 
+循环：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+for os in a b c d 
+do
+        echo $os
+done
+
+sum=0
+
+
+sum=0
+for (( xxx=3; xxx<16;xxx+=3  ))
+do
+        sum=$xxx
+        echo  $xxx
+done
+
+echo "sum:=$sum"
+
+a=1
+sum=0
+while [ $a -le 10  ]
+do
+        sum=$[$sum+$a]  
+        a=$[$a+1]
+done
+echo "sum:$sum"
+
+
+系统函数 
+basename /root/ab/home/cc/dd.txt   返回 dd.txt  
+basename /root/ab/home/cc/dd   返回 dd
+basename /root/ab/home/cc/dd.txt  .txt  返回 dd   
+
+filename="aa"_log_$(date);          调用系统函数拼接字符串
+echo $filename
+aa_log_2022年 10月 23日 星期日 02:27:10 PDT
 
 
 
+#!/bin/bash              得到父目录路径
+cd $(dirname $0)
+echo path: $(pwd)
+path: /home/zhangsan/myshell 
 
 
 
