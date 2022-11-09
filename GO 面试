@@ -81,3 +81,26 @@ MySQL***的缺点是其安全系统，主要是复杂而非标准，另外只有
 MySQL的价格随平台和安装方式变化。Linux的MySQL如果由用户自己或系统管理员而不是第三方安装则是免费的，第三方案则必须付许可费。Unix或Linux 自行安装 免费 、Unix或Linux 第三方安装收费。
   
   
+  
+  go channel 特性
+  会panic的几种情况
+
+1.向已经关闭的channel发送数据
+
+2.关闭已经关闭的channel
+
+3.关闭未初始化的nil channel
+
+会阻塞的情况：
+
+1. 从未初始化nil channel中读数据
+
+2. 向未初始化nil channel中发数据
+
+3.在没有读取的groutine时，向无缓冲channel发数据
+
+4.在没有数据时，从无缓冲channel读数据
+
+返回零值:
+
+从已经关闭的channe接收数据
