@@ -162,9 +162,10 @@ go gc 触发的时机： 1：分配的内存达到了gogc的比例 2：后台触
  
 
 
+GMP模型的理解
+https://www.sohu.com/a/457981360_355140
 
-
-
+https://learnku.com/articles/41728
 
 
 
