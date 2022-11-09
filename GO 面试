@@ -98,4 +98,8 @@ MySQL的价格随平台和安装方式变化。Linux的MySQL如果由用户自�
 返回零值:
 从已经关闭的channe接收数据
 
-
+Go routine 退出阿方式
+goroutine 终止的场景有三个：
+当一个 goroutine 完成了它的工作
+由于发生了没有处理的错误
+有其他的协程告诉它终止
