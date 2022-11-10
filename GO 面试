@@ -167,5 +167,8 @@ https://www.sohu.com/a/457981360_355140
 
 https://learnku.com/articles/41728
 
-
+服务发现的种类：
+基于Raft算法的Consul机制
+基于Http协议的分布式Etcd机制
+重量级一致性Zookeeper机制
 
