@@ -1,0 +1,13 @@
+1 **********************************************开启MySQL远程连接 ，外部访问
+root 用户名
+% 所有人都可以访问
+password 密码
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+1
+FLUSH PRIVILEGES; 
+————————————————
+2  **********************************************开启redis远程连接 ，外部访问
+bind 0.0.0.0
+requirepass xxx
+保护模式 yes
