@@ -26,6 +26,7 @@
             if(clientID.equals(stringRedisTemplate.opsForValue().get(lockKey))){
                 stringRedisTemplate.delete(lockKey);
             }
+            // 判断 锁 和释放锁 需要原子操作的奥
          }
          return "end";
     }
