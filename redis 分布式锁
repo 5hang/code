@@ -6,7 +6,7 @@
     @GetMapping("/deduct_stock")
     public String deductStock() {
             String lockKey = "product_101";
-            String clientID = UUID.randomUUID().toString();
+            String clientID = UUID.randomUUID().toString();   // 这个id 不能是线程的id  线程的id在分布式下，也可能相同
             // 传入当前的线程id， 超时时间的
             Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(lockKey,clientID,10,TimeUnit.SECONDS);
             if(!result) {
