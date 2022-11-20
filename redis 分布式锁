@@ -22,11 +22,40 @@
                  System.out.println("扣减失败了");
              }
          }finally {
+         
+           // *****************************释放方式1***********************************
              // 避免一个线程执行时间太长了，超时了另一个线程又进来了，
             if(clientID.equals(stringRedisTemplate.opsForValue().get(lockKey))){
                 stringRedisTemplate.delete(lockKey);
             }
             // 判断 锁 和释放锁 需要原子操作的奥
+             // *****************************释放方式2***********************************
+             
+              stringRedisTemplate.execute(
+                unlock.lua,
+                lockKey,
+                threadId
+              );
+             
+              // ****************************************************************
          }
          return "end";
     }
+    
+    
+    
+    
+    unlock.lua 脚本文件：
+    
+    释放锁的时候需要原子操作 ，redis 提供了执行的lua脚本  ，脚本的命令都是原子操作的
+    if(redis.call( 'get' , KEYS[1] == ARGV[1] ) then
+      return redis.call('del', KEYS[1])
+    end
+    return 0
+    
+    
+    
+    
+    
+    
+    
