@@ -498,7 +498,7 @@ list-max-ziplist-size: redis 用它来限制ziplist的大小
 		-4：每个ziplist内存占用不超过32kb
 		-5：每个ziplist内存占用不超过64kb
 
-默认 是：-2 
+默认 是：-2     
 
 
 
