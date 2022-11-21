@@ -22,3 +22,7 @@ mysql 引擎  5.5后默认innodb；
 create table xx(
 ...
 )engine=innodb;  
+
+
+查询数据库支持的所有的引擎
+show engines;
