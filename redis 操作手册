@@ -388,7 +388,10 @@ key 是string类型的：底层编码 int embstr  raw 三种   embstr在小于44
 BigKey:
 	1: 单个key的value 小于10kb 否则是bitkey
 	2：对于集合的key，建议元素数量小于1000  否则是bigkey
-	
+
+hash 默认最多500条记录
+如果一个hash存放100万个数据  需要按照hashid 打散成 10000个小的hash 来操作的
+
 bigkey：危害：
 网络阻塞
 数据倾斜：分布式时候 单个key太多了
@@ -404,9 +407,17 @@ bigkey的删除 阻塞满，   unlike key  异步删除的（推荐）
 
 
 
+****************pipeline  redis 命令批量处理接口
+1： 原生的 mset
+2： pipeline      
 
+redis.set(key value)  发送到redis  网络耗时 5ms  如果太多的set操作 耗时太长
+pipeline  可以执行多条的 不同redis 命令
 
-
+如果是集群模式的批处理操作了:
+1:计算不同的命令的 key 
+2：将相同的key 放在一起
+3：开启多个线程按照相同的key执行每个命令操作
 
 
 
