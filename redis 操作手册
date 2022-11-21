@@ -485,9 +485,20 @@ cluster-require-full-coverage no
  6：lua 和事务的 问题（集群无法做）
 
 
+list的底层是 ziplist 是申请的连续的内层空间，所以只适合申请比较小的内存，
 
+quiklist:是一个双端链表， 不过它的每个节点是一个ziplist；
 
+list-max-ziplist-size: redis 用它来限制ziplist的大小
+1：如果正数：表示ziplist 限制entry的个数多少个
+2：如果负数，表示ziplist最大的内存限制多少
+		-1：每个ziplist内存占用不超过4kb
+		-2：每个ziplist内存占用不超过8kb
+		-3：每个ziplist内存占用不超过16kb
+		-4：每个ziplist内存占用不超过32kb
+		-5：每个ziplist内存占用不超过64kb
 
+默认 是：-2 
 
 
 
