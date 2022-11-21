@@ -7,3 +7,10 @@
 读已提交    解决     未解决        未解决
 重复度      解决      解决         未解决        mysql默认
 串行        解决      解决         解决         项目用这个
+
+
+查看隔离级别
+select @@transaction_isolation;
+
+设置数据库的事务隔离级别
+set session TRANSACTION isolation level read UNCOMMITTED;
