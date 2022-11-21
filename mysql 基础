@@ -15,3 +15,10 @@ select @@transaction_isolation;
 
 设置数据库的事务隔离级别
 set session TRANSACTION isolation level read UNCOMMITTED;
+
+
+mysql 引擎  5.5后默认innodb；
+创建的每个表  可以指定使用的存储引擎的；
+create table xx(
+...
+)engine=innodb;  
