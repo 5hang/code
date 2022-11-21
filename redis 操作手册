@@ -378,7 +378,10 @@ Redis 哨兵模式：
 
 *************************************************************redis key 设计
 set  name aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1434
-
+string：三种编码方式：
+	1：int      数字类型
+	2：embstr   字符串长度小于等于44
+	3：raw	   字符串长度大于44
 key: 长度不要超过 44字节 ，这样key开辟的内存更快更方便
 key 是string类型的：底层编码 int embstr  raw 三种   embstr在小于44字节使用，采用了连续的空间，占用内存小
 遵循基本格式：业务名称：数据名字：id    login:username:userid
