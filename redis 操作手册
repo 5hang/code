@@ -444,8 +444,22 @@ maxmemory  1gb  配置redis 最大的内存使用
 一个key过期了不是立即删除的，而是惰性删除，只有在操作的时候删除，
 周期性的定时抽样不同的key是否过期 ，进行删除了
 
-2：内存淘汰
+2：内存淘汰 默认不淘汰  noeviction：不对Keys进行淘汰。
+以通过 maxmemory-policy 配置项来设置 Redis 的内存淘汰算法，如下：
+# maxmemory-policy 的可选值为：
+# 1) volatile-lru：在设置了过期时间的Keys中，通过LRU算法来进行淘汰。
+# 2) allkeys-lru：在所有的Keys中，通过LRU算法进行淘汰。
+# 3) volatile-lfu：在设置了过期时间的Keys中，通过LFU算法来进行淘汰。
+# 4) allkeys-lfu：在所有的Keys中，通过LFU算法进行淘汰。
+# 5) volatile-random：在设置了过期时间的Keys中，通过随机算法来进行淘汰。
+# 6) allkeys-random：在所有的Keys中，通过随机算法进行淘汰。
+# 7) volatile-ttl：在设置了过期时间的Keys中，选择过期时间最短的Key进行淘汰。
+# 8) noeviction：不对Keys进行淘汰。
 
+作者：JaydenLie
+链接：https://juejin.cn/post/6966559307399856142
+来源：稀土掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
 当内存占用超过90% ，
