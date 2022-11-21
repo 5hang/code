@@ -374,3 +374,39 @@ Redis 哨兵模式：
 内容： Sentinel  monitor dc-redis  127.0.0.1  6379  1
 
 启动哨兵监控软件：redis-sentinel  redis_sentinel.conf  
+
+
+*************************************************************redis key 设计
+set  name aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1434
+
+key: 长度不要超过 44字节 ，这样key开辟的内存更快更方便
+key 是string类型的：底层编码 int embstr  raw 三种   embstr在小于44字节使用，采用了连续的空间，占用内存小
+遵循基本格式：业务名称：数据名字：id    login:username:userid
+
+
+
+BigKey:
+	1: 单个key的value 小于10kb 否则是bitkey
+	2：对于集合的key，建议元素数量小于1000  否则是bigkey
+	
+bigkey：危害：
+网络阻塞
+数据倾斜：分布式时候 单个key太多了
+redis阻塞：不同集合集合运算负责
+cpu压力：bigkey  读写需要序列化，
+bigkey的删除 阻塞满，   unlike key  异步删除的（推荐）
+
+找到redis存在的bigkey并且干掉它：
+1：利用scan扫描 redis 所有的key  利用llen strlen 判断长度
+2：第三方工具：  redis-rdb-tools  分析rdb快照文件，分析占用内存使用的情况
+
+
+
+
+
+
+
+
+
+
+
