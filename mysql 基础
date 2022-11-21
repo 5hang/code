@@ -26,3 +26,7 @@ create table xx(
 
 查询数据库支持的所有的引擎
 show engines;
+
+
+innodb 特点： 支持事务、行级锁表级锁，支持外键约束
+每个innodb的表 都有一个表空间过的文件 .idb ，存储了 表结构，表的数据  存储的索引
