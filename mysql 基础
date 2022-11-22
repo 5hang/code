@@ -198,3 +198,5 @@ general_log_file	/var/lib/mysql/xxx.log
 general_log=1;
 general_log_file=mysql_query.log
 
+4:慢查询日志： 记录了所有操作超过指定配置数的 记录  ，
+
