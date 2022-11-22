@@ -187,5 +187,5 @@ show variables like '%log_bin%'
 mysqlbinlog -v logfilename 查看二进制文件的方法
 
 
-
+二进制文件默认30 天自动删除，也可以手动删除的
 
