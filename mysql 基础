@@ -212,3 +212,37 @@ read-only=0       可读可写
 再主库创建远程登录的账户和权限
 create user 'itcast'@'%' identified with mysql_native_password by '123456'   创建用户 itcast  密码123456
 grant replication slave on ** To  'itcast'@'%'
+
+执行命令 查看二进制日志 的坐标
+show master status;
+
+FILE          POSITION   表示写到了哪个文件的哪个位置了
+binlog.00003  667
+
+从库的配置
+/etc/my.cnf
+
+server-id=2
+read-only=1
+
+systemctl restart mysqld;
+
+登录从MySQL；
+
+change master to master_host='主的ip',master_user='',master_password='',master_log_file='binlog.00003',master_log_pos=663;
+
+start slave; 启动主从
+
+
+show replica status \G ;查看主从信息
+               
+                。。。。。
+                replica_io_running  : yes
+                replica_sql_running : yes
+                。。。。。
+
+
+
+
+
+
