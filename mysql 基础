@@ -126,7 +126,10 @@ show profiles for query query_ID; 对上面操作的id 每一步进行分析，�
 
 
 
-
+上面的方式做sql 优化是按照时间来统计的 并不能做到最好
+下面  explain 执行计划： 来统计每一天sql的操作的每一步 看看是如何执行的
+ 
+ explan + sql 语法；
 
 
 
