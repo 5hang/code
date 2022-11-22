@@ -75,7 +75,14 @@ select * from where name = "zhangsan" 查询过程是先拿name在二级索引�
 再拿这个id 到 主键索引中查到一行的值
 
 
+、、创建索引
+         不填写 表示常规索引
+create [unique | FULLTEXT ] index index_name on table_name (colname,...);
 
+查看索引：
+show index from table_name;
+删除索引：
+drop index index_name on table_name;
 
 
 
