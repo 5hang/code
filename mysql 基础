@@ -142,8 +142,16 @@ mysql 锁：
            unlock tables;
         
 2：         mysqldump --single-transaction -uroot -p123456 itcast > itcast.sql    不加全局锁的备份
-表锁：
 
+
+表锁：分为 表
+读锁:  一个客户端加读锁，不会阻塞其他客户端的读，但是会阻塞所有的写操作
+写锁:  自己可读可写，其他的客户端不能 也 读不能写
+
+        加锁： lock tables table_name read/write
+        解锁： unlock tables 
+
+        
 行锁：
 
 
