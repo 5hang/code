@@ -101,6 +101,16 @@ Com_update    0
 Com_xa_end    0
 
 
+通过mysq 的慢查询日志 找到哪些sql 需要优化的；
+show variables like 'slow_query_log';   默认没有打开的
+slow_query_log	OFF
+
+修改/etc/my.cnf 开启慢查询
+#开启慢查询日志开关
+slow_query_log=1
+#设置慢查询时间，如果超过了2s ，则记录查询的日志
+long_query_time=2;
+
 
 
 
