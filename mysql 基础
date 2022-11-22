@@ -122,6 +122,19 @@ select @@profiling;         查看是否打开
 
 show PROFILES;  来查询当前会话所有的操作的耗时了
 
+show profiles for query query_ID; 对上面操作的id 每一步进行分析，到底哪个操作慢
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
