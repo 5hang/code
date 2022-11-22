@@ -137,7 +137,11 @@ show profiles for query query_ID; 对上面操作的id 每一步进行分析，�
 mysql 锁：
 
 全局锁： 锁整个数据库的所有的表 ，加锁后只能读取了 （一般用于数据库的全局备份了）
-
+        flush tables with read lock;
+        
+        mysqldump -uroot -p123 itcast >itcast.sql
+        
+        unlock tables;
 表锁：
 
 行锁：
