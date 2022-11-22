@@ -111,6 +111,7 @@ slow_query_log=1
 #设置慢查询时间，如果超过了2s ，则记录查询的日志
 long_query_time=2;
 
-
+重启mysql 开启了慢查询后  ，满足条件的慢查询 会存放再 /var/lib/mysql/xxx-slow.log 文件中的奥
+有了这个文件就可以分析 MySQL的 语法哪些是需要优化的了
 
 
