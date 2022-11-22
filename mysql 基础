@@ -115,3 +115,16 @@ long_query_time=2;
 有了这个文件就可以分析 MySQL的 语法哪些是需要优化的了
 
 
+有时候慢查询统计 sql 快慢还不够 ，需要profile分析功能的
+select @@have_profiling;   查看是否支持
+select @@profiling;         查看是否打开
+
+
+show PROFILES;  来查询当前会话所有的操作的耗时了
+
+
+
+
+
+
+
