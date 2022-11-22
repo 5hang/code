@@ -189,3 +189,12 @@ mysqlbinlog -v logfilename 查看二进制文件的方法
 
 二进制文件默认30 天自动删除，也可以手动删除的
 
+3：查询日志  （记录了客户端所有请求的日志） 这个日志太大了 ，默认关闭的
+show variables like '%general%'
+general_log_file	/var/lib/mysql/xxx.log
+
+配置查询日志：
+修改my.cnf
+general_log=1;
+general_log_file=mysql_query.log
+
