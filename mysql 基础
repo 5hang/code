@@ -173,6 +173,15 @@ innodb的行锁是对索引进行加锁的，如果这个字段没有索引，�
 
 
 
+mysql 日志：
+
+1：错误日志： log_error	/var/log/mysqld.log
+
+show variables like  '%log_error%'
+
+2：二进制日志：  数据库的所有变化都存在这个文件中， 可以通过它恢复mysql所有的数据
+
+show variables like '%log_bin%'
 
 
 
