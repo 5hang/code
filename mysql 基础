@@ -172,6 +172,7 @@ innodb的行锁是对索引进行加锁的，如果这个字段没有索引，�
 
 
 
+/etc/my.cnf mysql的启动的配置文件奥
 
 mysql 日志：
 
@@ -183,7 +184,7 @@ show variables like  '%log_error%'
 
 show variables like '%log_bin%'
 
-
+mysqlbinlog -v logfilename 查看二进制文件的方法
 
 
 
