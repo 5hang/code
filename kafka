@@ -57,9 +57,17 @@ zookeeper.connect=192.168.13.134:2181
 2： 从头开始消费
 ./kafka-console-consumer.sh --bootstrap-server  192.168.13.134:9092 --from-beginning --topic test
 
-
-
-
+ 
+ 上面的发送 消费消息，多个人消费，一个人发送 ，接收方每个人都可以收到消息的
+ 
+ 单播消息
+./kafka-console-consumer.sh --bootstrap-server 192.168.13.134:9092 --consumer-property group.id=testGroup --topic test
+ 
+ 多播消息
+ --consumer-property group.id=testGroup
+ 同一个消费组中只有一个消费组能获取消息
+ 不同消费组的  2个都能获取消息的
+ 
 **生产者将消息发送到broker ，broker将消息保存在本地日志文件中
 /var/kafka-log 
 消息的保存是有顺序的，
