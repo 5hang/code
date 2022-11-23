@@ -37,3 +37,26 @@ zookeeper.connect=192.168.13.134:2181
 查看是否启动成功了
 
 
+
+************************************kafka中的概念************************
+
+创建topic
+./kafka-topics.sh --create --zookeeper 192.168.13.134:2181 --replication-factor 1 --partitions 1 --topic test
+
+查看topic
+./kafka-topics.sh  --list --zookeeper  192.168.13.134:2181
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
