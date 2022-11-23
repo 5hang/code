@@ -46,6 +46,15 @@ zookeeper.connect=192.168.13.134:2181
 查看topic
 ./kafka-topics.sh  --list --zookeeper  192.168.13.134:2181
 
+发送消息
+./kafka-console-producer.sh --broker-list 192.168.13.134:9092  --topic test
+消费消息
+1:  从最后一条偏移量+1开始消费
+ ./kafka-console-consumer.sh --bootstrap-server 192.168.13.134:9092 --topic test
+
+2： 从头开始消费
+
+./kafka-console-consumer.sh --bootstrap-server  192.168.13.134:9092 --from-beginning --topic test
 
 
 
