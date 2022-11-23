@@ -21,7 +21,8 @@ cd bin
 wget https://archive.apache.org/dist/kafka/2.4.1/kafka_2.11-2.4.1.tgz
 
 解压kafka
-kafka config/server.properies 配置
+config/server.properies 配置
+
 #kafka集群中的唯一id
 broker.id=0
 #kafka 部署的服务的提供服务的IP端口
@@ -30,3 +31,9 @@ listeners=PLAINTEXT://192.168.13.134:9092
 log.dir=/tmp/kafka-logs
 #kafka 链接 zookeeper的地址
 zookeeper.connect=192.168.13.134:2181
+
+启动kafka
+[root@xxx bin]# ./kafka-server-start.sh -daemon ../config/server.properties 
+查看是否启动成功了
+
+
