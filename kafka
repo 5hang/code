@@ -1,0 +1,22 @@
+docker 安装 zookeeper
+
+docker-compose.yml 
+
+version: "3.1"
+services:
+ zk:
+  image: daocloud.io/daocloud/zookeeper:latest
+  restart: always
+  container_name: zk
+  ports:
+   - 2181:2181
+docker-compose up -d    到这里成功安装并启动zookeeper
+
+docker exec -it zk bash
+cd bin
+./zkCli.sh
+
+
+下载 kafka
+wget https://archive.apache.org/dist/kafka/2.4.1/kafka_2.11-2.4.1.tgz
+
