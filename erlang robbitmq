@@ -1,0 +1,21 @@
+
+erlang 23.3  安装
+
+https://www.erlang.org/patches/otp-23.3
+
+先解压
+
+sudo yum install gcc-c++ 
+
+yum install perl
+
+yum -y install ncurses-devel
+
+  ./configure --prefix=/usr/local/erlang
+  make && make install
+
+export PATH=$PATH:/usr/local/erlang/bin
+
+source /etc/profile
+
+erl -version
