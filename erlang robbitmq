@@ -1,21 +1,17 @@
+ yum -y install build-essential openssl openssl-devel unixODBC unixODBC-devel make gcc gcc-c++ kernel-devel m4 ncurses-devel tk tc xz
+#1、进入rabbitmq目录
+cd /mydata/studio/rabbitmq
 
-erlang 23.3  安装
+#2、安装erlang
+rpm -ivh erlang-23.3.4.7-1.el7.x86_64.rpm
 
-https://www.erlang.org/patches/otp-23.3
+#3、安装socat
+rpm -ivh socat-1.7.3.2-5.el7.lux.x86_64.rpm
 
-先解压
+#4、rabbitmq
+rpm -ivh rabbitmq-server-3.9.11-1.el7.noarch.rpm
 
-sudo yum install gcc-c++ 
 
-yum install perl
-
-yum -y install ncurses-devel
-
-  ./configure --prefix=/usr/local/erlang
-  make && make install
-
-export PATH=$PATH:/usr/local/erlang/bin
-
-source /etc/profile
-
-erl -version
+# 启动 | 停止
+systemctl  start|stop|restart  rabbitmq-server
+ 
