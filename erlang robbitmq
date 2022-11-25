@@ -13,7 +13,7 @@ rpm -ivh rabbitmq-server-3.9.11-1.el7.noarch.rpm
 
 
 # 启动 | 停止
-systemctl  start|stop|restart  rabbitmq-server
+systemctl  start   rabbitmq-server
 
 先启动RabbitMQ服务，然后执行以下命令。
 
