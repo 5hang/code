@@ -148,6 +148,26 @@ db.user.update({},{ $pull:{} }) 删除数据中对于的数据 只要值相同�
                         默认false   false 
 db.user.update({},{}, 3 upsert , 4 multiple )             3:没找到是否新增    4：当条件匹配成功是否 全操作  默认处理第一条的
 
+db.user.remove({age:{$gt:22}} ，false )  删除  可以多个
+
+db.user.remove({age:{$gt:22}} ，true )  删除 限制一个
+
+db.user.deleteOne({age:{$gt:22}})
+
+db.user.deleteMany({age:{$gt:22}})
+
+
+//  分组操作  $sum   
+> db.user.aggregate([{ $group:{ _id:null, count:{ $sum:1 } }   }])
+
+不分组，统计 age大于 55的有多少
+> db.user.aggregate([{ $match:{age:{$gt:55}}},{ $group:{ _id:null, count:{ $sum:1 } }   }])
+{ "_id" : null, "count" : 1 }
+
+
+
+
+
 
 
 
