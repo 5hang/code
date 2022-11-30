@@ -157,14 +157,30 @@ db.user.deleteOne({age:{$gt:22}})
 db.user.deleteMany({age:{$gt:22}})
 
 
-//  分组操作  $sum   
+//  分组操作  $sum    $max  $min  $avg
 > db.user.aggregate([{ $group:{ _id:null, count:{ $sum:1 } }   }])
+
+$Project  
+$concat 字符串拼接
+$toUpper
+$toLower
+$substr
+$dateToString
+数学运算的 +-*、/
+$add [2 3]
+$subtract [age ,1 ]
+$multiply [$age ,2 ]
+$divide [$age , 2]
+$mod    [ $age ,10 ]
+
 
 不分组，统计 age大于 55的有多少
 > db.user.aggregate([{ $match:{age:{$gt:55}}},{ $group:{ _id:null, count:{ $sum:1 } }   }])
 { "_id" : null, "count" : 1 }
 
 
+
+***********************************************************索引*************************************************************************
 
 
 
