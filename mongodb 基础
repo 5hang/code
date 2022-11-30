@@ -120,17 +120,33 @@ BulkWriteResult({
 
 
 
+、、 主键存在 则 修改  ，不存在的则新增
+> db.user.save({  "_id" : ObjectId("6386e2b30346b30ec081c938") , "name":"sansan" })
 
 
+、覆盖方式修改      -----------------、 覆盖匹配后的第一条数据  只要name的查到了，后面的字段全部覆盖，单仅仅限一条
+> db.user.update({name:"one"},{ name:"tow" ,pwd:111 })
+  修改             --------------------
+> db.user.update({ "name":"two" },{ "$set":{ name:"ttt"} })
 
 
+$inc   数字字段的+- 操作
+$push  数组字段增加数据
+$addToSet  数组中存在则不加，没有则加入   大小写敏感的
+
+db.user.update({},{ $rename:{"name":"name2"} }) 修改字段的名字
+
+db.user.update({},{ $pop:{} })
+db.user.update({},{ $pullAll:{} })
+
+db.user.update({},{ $pull:{} }) 删除数据中对于的数据 只要值相同的全部删除，有几个删几个
+
+、、删除某个字段呢                           pwd这个字段干掉它
+> db.user.update({name:"ttt"},{ "$unset":{ pwd:1} });
 
 
-
-
-
-
-
+                        默认false   false 
+db.user.update({},{}, 3 upsert , 4 multiple )             3:没找到是否新增    4：当条件匹配成功是否 全操作  默认处理第一条的
 
 
 
