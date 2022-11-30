@@ -1,0 +1,137 @@
+mongod -f ./mongod.conf
+
+mongod --shutdown --dbpath ./dbpath/
+
+mongo  
+
+use admin
+
+db.auth("root","root")
+
+////////////////
+
+db.createCollection("user1")  创建集合
+
+                            限制容量       最大2000k    最大的条数
+db.createCollection("hi",{"capped":true ,"size":2000 ,"max":100 ,"autoIndexId":true } ) ;
+{
+        "note" : "The autoIndexId option is deprecated and will be removed in a future release",
+        "ok" : 1
+}
+
+
+ show collections;
+ 
+ 
+ db.hi.stats();     查看表的详情
+{
+        "ns" : "test.hi",
+        "size" : 0,
+        "count" : 0,
+        "storageSize" : 4096,
+        "freeStorageSize" : 0,
+        "capped" : true,
+        "max" : 100,
+        "maxSize" : 2048,
+        "sleepCount" : 0, 
+
+
+
+
+> db.c.drop();  删除表
+
+
+
+> db.user.insert({ "name":"zhangsan" ,"age":88 })
+WriteResult({ "nInserted" : 1 })
+> db.user.save({ "name":"hehe" ,"age":99 })
+WriteResult({ "nInserted" : 1 })
+> db.user.insertOne({ "name":"one" ,"age":55  })
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("6386e2f10346b30ec081c93a")
+} 
+> db.user.save([{},{}])
+BulkWriteResult({
+        "writeErrors" : [ ],
+        "writeConcernErrors" : [ ],
+        "nInserted" : 2,
+        "nUpserted" : 0,
+        "nMatched" : 0,
+        "nModified" : 0,
+        "nRemoved" : 0,
+        "upserted" : [ ]
+}) 
+> db.user.find()
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "name" : "zhangsan", "age" : 88 }
+{ "_id" : ObjectId("6386e2d30346b30ec081c939"), "name" : "hehe", "age" : 99 }
+{ "_id" : ObjectId("6386e2f10346b30ec081c93a"), "name" : "one", "age" : 55 }
+{ "_id" : ObjectId("6386e3430346b30ec081c93c") }
+{ "_id" : ObjectId("6386e3430346b30ec081c93d") }
+
+
+> db.user.find()
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "name" : "zhangsan", "age" : 88 }
+{ "_id" : ObjectId("6386e2d30346b30ec081c939"), "name" : "hehe", "age" : 99 }
+{ "_id" : ObjectId("6386e2f10346b30ec081c93a"), "name" : "one", "age" : 55 }
+{ "_id" : ObjectId("6386e3430346b30ec081c93c") }
+{ "_id" : ObjectId("6386e3430346b30ec081c93d") }
+> db.user.find({"name":"one"})
+{ "_id" : ObjectId("6386e2f10346b30ec081c93a"), "name" : "one", "age" : 55 }
+> db.user.find({ "age" : {$lte:70}})
+{ "_id" : ObjectId("6386e2f10346b30ec081c93a"), "name" : "one", "age" : 55 }
+> db.user.findOne();
+{
+        "_id" : ObjectId("6386e2b30346b30ec081c938"),
+        "name" : "zhangsan",
+        "age" : 88
+}
+          // 查询投影查询  约束， 0 不需要  1需要的
+> db.user.find({},{"name":0})
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "age" : 88 }
+{ "_id" : ObjectId("6386e2d30346b30ec081c939"), "age" : 99 }
+{ "_id" : ObjectId("6386e2f10346b30ec081c93a"), "age" : 55 }
+{ "_id" : ObjectId("6386e3430346b30ec081c93c") }
+{ "_id" : ObjectId("6386e3430346b30ec081c93d") }
+
+年龄 zhangsan  并且age《99
+> db.user.find({"name":"zhangsan", "age": { "$lt":99 } })
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "name" : "zhangsan", "age" : 88 }
+> 
+    多个条件的或者 
+> db.user.find({ "$or":[{"name":"zhangsan"},{ "age":{  "$gt":56 } }] })
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "name" : "zhangsan", "age" : 88 }
+{ "_id" : ObjectId("6386e2d30346b30ec081c939"), "name" : "hehe", "age" : 99 }
+> 
+
+
+ db.user.find(  { "name":{ "$type":"string" } })   按照熟悉的类型查询的
+ 
+ 
+
+> db.user.find({ "name":/^zh/ })             正则表达式 查询的
+{ "_id" : ObjectId("6386e2b30346b30ec081c938"), "name" : "zhangsan", "age" : 88 }
+> 
+
+
+跳过 多少行 查询 
+> db.user.find().limit(1).skip(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
