@@ -1,0 +1,82 @@
+[root@master zookeeper]# ./bin/zkServer.sh start conf/zoo_sample.cfg 
+
+[root@master zookeeper]# ./bin/zkCli.sh 
+
+
+create /test
+
+create -s -e /hi
+
+分布式协调服务
+
+集群搭建  参考：https://cloud.tencent.com/developer/article/1820033
+
+mkdir /opt/zkdata1 /opt/zkdata2 /opt/zkdata3
+
+[root@localhost opt]# touch ./zkdata1/myid ./zkdata2/myid ./zkdata3/myid
+[root@localhost opt]# echo 1 > ./zkdata1/myid
+[root@localhost opt]# echo 2 > ./zkdata2/myid
+[root@localhost opt]# echo 3 > ./zkdata3/myid
+
+zoo1.cfg：
+tickTime=2000
+initLimit=10
+syncLimit=5
+# 指定数据存储位置
+dataDir=/opt/zkdata1    必须是绝对路径
+# 指定客户端连接的端口
+clientPort=2181
+# 指定集群中服务器
+# 端口1：用于数据同步
+# 端口2：用于leader选举
+server.1=localhost:2880:3881
+server.2=localhost:2882:3883
+server.3=localhost:2884:3885
+
+zoo2.cfg：
+tickTime=2000
+initLimit=10
+syncLimit=5
+# 指定数据存储位置
+dataDir=/opt/zkdata2
+# 指定客户端连接的端口
+clientPort=2182
+# 指定集群中服务器
+# 端口1：用于数据同步
+# 端口2：用于leader选举
+server.1=localhost:2880:3881
+server.2=localhost:2882:3883
+server.3=localhost:2884:3885
+
+
+zoo3.cfg：
+tickTime=2000
+initLimit=10
+syncLimit=5
+# 指定数据存储位置
+dataDir=/opt/zkdata3
+# 指定客户端连接的端口
+clientPort=2183
+# 指定集群中服务器
+# 端口1：用于数据同步
+# 端口2：用于leader选举
+server.1=localhost:2880:3881
+server.2=localhost:2882:3883
+server.3=localhost:2884:3885
+
+4.分别启动各个服务器：
+依次启动服务器1、2、3
+[root@localhost opt]# ./apache-zookeeper-3.6.3-bin/bin/zkServer.sh start ./apache-zookeeper-3.6.3-bin/conf/zoo1.cfg 
+ZooKeeper JMX enabled by default
+Using config: ./apache-zookeeper-3.6.3-bin/conf/zoo1.cfg
+Starting zookeeper ... STARTED
+
+[root@localhost opt]# ./apache-zookeeper-3.6.3-bin/bin/zkServer.sh start ./apache-zookeeper-3.6.3-bin/conf/zoo2.cfg 
+ZooKeeper JMX enabled by default
+Using config: ./apache-zookeeper-3.6.3-bin/conf/zoo2.cfg
+Starting zookeeper ... STARTED
+
+[root@localhost opt]# ./apache-zookeeper-3.6.3-bin/bin/zkServer.sh start ./apache-zookeeper-3.6.3-bin/conf/zoo3.cfg 
+ZooKeeper JMX enabled by default
+Using config: ./apache-zookeeper-3.6.3-bin/conf/zoo3.cfg
+Starting zookeeper ... STARTED
