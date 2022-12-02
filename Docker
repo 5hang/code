@@ -34,35 +34,10 @@ yum makecache fast
 安装docker
 yum -y install docker-ce docker-ce-cli  containerd.io
 
-启动docker
  systemctl start docker
 
  systemctl enable docker
-
-
- docker version
  
- docker run hello-world
- 
- 设置阿里云 容器镜像加速器******https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
- *************************************************************
- 加速器地址
-https://s38gbj2u.mirror.aliyuncs.com
-https://s38gbj2u.mirror.aliyuncs.com
-复制
-操作文档
-Ubuntu
-CentOS
-Mac
-Windows
-1. 安装／升级Docker客户端
-推荐安装1.10.0以上版本的Docker客户端，参考文档docker-ce
-
-2. 配置镜像加速器
-针对Docker客户端版本大于 1.10.0 的用户
-
-您可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速器
-
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
