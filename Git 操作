@@ -15,9 +15,9 @@ ssh-keygen -t rsa
 cat /root/.ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTIpYXM05BywWvI5Cn/fA2kv58fuDAPQVJT7kd2mRQZWusyJYGhRSgepl1/aLrRvqCZvfO+DUOcTH7sZ/q+NkZVlaMXJ2r45guYRyfTewbAeqg8mI87kknigntRcQ0KPASj2KGRmjJpx6BS7kolL5Lil9m+VPtUuhubo0wtpZrlXPdy/tn6D+SU3UmBmwnXVhtBmJka9fl7D5WYMg/BoGuxQHaT6pq2Cl6T20M+Vtp2kvlvjysVjVEFEVEUK3XE7Jqw5OhIJz4ZCaV8VwXqK8zKVUnb59Q6DMQWWiyhOdPDvH80rGKf9ZuYMmHb6OIfhilOkYFDxrj39XwvBvuTuP/ root@xxx
 
-
-
-
+git 项目的地址有2中，
+git@github.com:5hang/code.git       需要授权才能clone的奥  ssh公钥上传奥
+https://github.com/5hang/code.git   不用授权即可clone
 
 mkdir test 
 cd test
