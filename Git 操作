@@ -8,6 +8,17 @@ yum -y install git
 git --vresion
 
 
+git config --global user.email [email]   //邮箱
+git config --global user.name [username] //密码
+本地设置好用户名 邮箱 本地生产公钥，上传后台 即可
+ssh-keygen -t rsa 
+cat /root/.ssh/id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTIpYXM05BywWvI5Cn/fA2kv58fuDAPQVJT7kd2mRQZWusyJYGhRSgepl1/aLrRvqCZvfO+DUOcTH7sZ/q+NkZVlaMXJ2r45guYRyfTewbAeqg8mI87kknigntRcQ0KPASj2KGRmjJpx6BS7kolL5Lil9m+VPtUuhubo0wtpZrlXPdy/tn6D+SU3UmBmwnXVhtBmJka9fl7D5WYMg/BoGuxQHaT6pq2Cl6T20M+Vtp2kvlvjysVjVEFEVEUK3XE7Jqw5OhIJz4ZCaV8VwXqK8zKVUnb59Q6DMQWWiyhOdPDvH80rGKf9ZuYMmHb6OIfhilOkYFDxrj39XwvBvuTuP/ root@xxx
+
+
+
+
+
 mkdir test 
 cd test
 git init  初始化本地git仓库
