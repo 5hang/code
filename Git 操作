@@ -1,4 +1,9 @@
 
+
+mkdir test 
+cd test
+git init  初始化本地git仓库
+
 git branch -r
 git branch -a
 git branch dev 新建本地分支
