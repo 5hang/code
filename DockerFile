@@ -43,4 +43,44 @@ d076ba10a1a9        3 minutes ago       /bin/sh -c #(nop)  ENV path1=/zhangsan  
 47165a917cfa        3 minutes ago       /bin/sh -c #(nop)  MAINTAINER zhangsan<6666@…   0B                  
 eeb6ee3f44bd        15 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
 <missing>           15 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
-<missing>           15 months ago       /bin/sh -c #(nop) ADD file:b3ebbe8bd304723d4…   204MB               
+<missing>           15 months ago       /bin/sh -c #(nop) ADD file:b3ebbe8bd304723d4…   204MB     
+
+dockerfile  例子：
+******************************************************************************
+FROM centos:7.9.2009
+MAINTAINER  zhangsan<6666@qq.com>
+
+ENV path1  /zhangsan
+
+WORKDIR $path1
+
+ADD ./protobuf-all-3.11.2.tar.gz   $path1
+
+RUN yum -y install  vim
+RUN yum -y install  net-tools
+
+EXPOSE 80
+
+CMD echo $path1
+CMD echo "first docker file make success ..."
+CMD /bin/bash
+******************************************************************************
+go 项目 docker镜像制作
+
+编译go项目  发现centos下编译生成的二进制文件，拿进alpine下运行时有问题的。
+
+go build -tags netgo -o  app  main.go
+
+*******************docker_go************************
+FROM alpine:3.12
+RUN mkdir "/app"
+WORKDIR "/app"
+COPY app  /app/app
+RUN chmod +x /app/app
+ENTRYPOINT ["./app"]
+*******************************************
+制作镜像
+docker build -f docker_go -t testgo:1
+运行镜像
+docker run  -it  -v  /home/zhangsan/docker/:/app   testgo:1     ---注意 -v ： 后面的路径可以是文件夹映射，也可以是文件映射， 但是要是绝对路径奥
+
