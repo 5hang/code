@@ -88,3 +88,10 @@ docker run  -it  -v  /home/zhangsan/docker/:/app   testgo:1     ---注意 -v ：
 docker pull golang
 FROM golang   如果docker_go FROM 这个镜像的话 ，在编译go源码的时候就默认就可以了
 docker run -d  -v /home/zhangsan/docker/:/app  testgofromgolane:1.1
+
+也可以让docker_go  FROM ubuntu 镜像 试试奥
+golang 镜像 900M
+ubuntu 镜像  70M
+alpine 镜像   4M
+
+
