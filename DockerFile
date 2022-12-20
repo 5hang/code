@@ -72,7 +72,7 @@ go 项目 docker镜像制作
 go build -tags netgo -o  app  main.go
 
 *******************docker_go************************
-FROM alpine:3.12
+FROM alpine:3.12 
 RUN mkdir "/app"
 WORKDIR "/app"
 COPY app  /app/app
@@ -84,3 +84,7 @@ docker build -f docker_go -t testgo:1
 运行镜像
 docker run  -it  -v  /home/zhangsan/docker/:/app   testgo:1     ---注意 -v ： 后面的路径可以是文件夹映射，也可以是文件映射， 但是要是绝对路径奥
 
+*********************使用golang 镜像 制作go项目的dockers镜像***********************
+docker pull golang
+FROM golang   如果docker_go FROM 这个镜像的话 ，在编译go源码的时候就默认就可以了
+docker run -d  -v /home/zhangsan/docker/:/app  testgofromgolane:1.1
