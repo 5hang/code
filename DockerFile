@@ -22,3 +22,25 @@ RUN：命令实在构建时候执行，CMD：实在run时候执行的
 实例1：
 centos7 镜像具备 vim+ifconfig+jdk8
 docker pull centos 
+
+
+// -t name 必须是小写字母奥
+docker build -f dockerfile  -t mydocker:1.1 . 
+
+
+
+
+history mycentos:1.1     查看制作的这个docker镜像的步骤 
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+276dff5d8a73        2 minutes ago       /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "/bin…   0B                  
+3859a4af80c4        2 minutes ago       /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "echo…   0B                  
+d84757e99ad1        2 minutes ago       /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "echo…   0B                  
+03bec4e9bce7        2 minutes ago       /bin/sh -c #(nop)  EXPOSE 80                    0B                  
+6e26a7c230c0        2 minutes ago       /bin/sh -c yum -y install  net-tools            194MB               
+6683a0288510        2 minutes ago       /bin/sh -c yum -y install  vim                  249MB               
+dfcddffc7eed        3 minutes ago       /bin/sh -c #(nop) WORKDIR /zhangsan             0B                  
+d076ba10a1a9        3 minutes ago       /bin/sh -c #(nop)  ENV path1=/zhangsan          0B                  
+47165a917cfa        3 minutes ago       /bin/sh -c #(nop)  MAINTAINER zhangsan<6666@…   0B                  
+eeb6ee3f44bd        15 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
+<missing>           15 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
+<missing>           15 months ago       /bin/sh -c #(nop) ADD file:b3ebbe8bd304723d4…   204MB               
