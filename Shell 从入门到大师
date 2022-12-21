@@ -1,3 +1,25 @@
+!!  执行linux上一条命令
+history 查看历史命令
+!12 执行history 对于index的命令的
+$ 获取变量中的内容
++-*/  %
+&  后台执行
+；    之linux 一行执行多条命令分割
+\     转义符
+··    反引号   命令中执行命令
+''
+"" 
+通配符：
+~  家目录
+*  所有
+？  匹配单个字符
+[list]   配置里面的单个字符   file[5-8]   就是匹配file5  file6 file7 file8 
+[!list]  配置除了里面的单个字符
+{s1,s2...} 匹配一个范围的
+
+
+
+
 $0  当前脚本的名称
 $1  获取脚本命令传过来的参数
 $2
@@ -197,6 +219,19 @@ else
         echo "归档失败了"
 fi
 exit
+
+
+grep  -i "test" /etc/password   行检索命令 获取一行记录
+ 
+grep "root" /etc/passwd | cut -d ":"  -f 3  cut  -d ""  指定分隔符  -f 获取对应的index
+[root@master test]# grep "root" /etc/passwd | cut -d ":"  -f 3,4
+[root@master test]# grep "root" /etc/passwd | cut -d ":"  -f 3-4
+
+tr   "aa"  "bb"       吧aa替换成bb
+tr  -s  "s"       去重
+tr  -d  "1"       删除里面的字符
+
+
 
 
 
