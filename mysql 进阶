@@ -1,3 +1,39 @@
+[root@master yum.repos.d]# ls
+CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo          elrepo.repo        ius-archive.repo  kubernetes.repo              vscode.repo
+CentOS-CR.repo         CentOS-Media.repo      CentOS-x86_64-kernel.repo  epel.repo          ius.repo          mysql-community.repo         wandisco-git.repo
+CentOS-Debuginfo.repo  CentOS-Sources.repo    docker-ce.repo             epel-testing.repo  ius-testing.repo  mysql-community-source.repo
+[root@master yum.repos.d]# rm -rf mysql-community*
+
+//搜索安装的MySQL包: 没有那个文件或目录
+[root@master test]# rpm -qa |grep mysql 
+mysql-community-libs-5.6.51-2.el7.x86_64
+mysql-community-common-5.6.51-2.el7.x86_64
+mysql-community-release-el7-5.noarch
+mysql-community-client-5.6.51-2.el7.x86_64
+mysql-community-server-5.6.51-2.el7.x86_64
+[root@master test]# 
+[root@master test]# rpm -e --nodeps   mysql-community-libs-5.6.51-2.el7.x86_64
+[root@master test]# rpm -e --nodeps   mysql-community-common-5.6.51-2.el7.x86_64
+[root@master test]# rpm -e --nodeps   mysql-community-release-el7-5.noarch 
+[root@master test]# rpm -qa |grep mysql 
+[root@master test]# ls
+mysql57-community-release-el7-9.noarch.rpm
+[root@master test]# rpm -ivh mysql57-community-release-el7-9.noarch.rpm 
+准备中...                          ################################# [100%]
+正在升级/安装...
+   1:mysql57-community-release-el7-9  ################################# [100%]
+[root@master test]# cd /etc/yum.repos.d/
+[root@master yum.repos.d]# ls
+CentOS-Base.repo       CentOS-fasttrack.repo  CentOS-Vault.repo          elrepo.repo        ius-archive.repo  kubernetes.repo              vscode.repo
+CentOS-CR.repo         CentOS-Media.repo      CentOS-x86_64-kernel.repo  epel.repo          ius.repo          mysql-community.repo         wandisco-git.repo
+CentOS-Debuginfo.repo  CentOS-Sources.repo    docker-ce.repo             epel-testing.repo  ius-testing.repo  mysql-community-source.repo
+[root@master yum.repos.d]# rpm -qa |grep mysql 
+mysql57-community-release-el7-9.noarch
+
+
+
+
+
 
 
 事务的隔离级别 （隔离级别越高 数据越安全，性能越低奥）
