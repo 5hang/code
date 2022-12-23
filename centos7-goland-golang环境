@@ -53,6 +53,8 @@ go env
 七牛云提供的代理地址
 export GOPROXY=https://goproxy.cn 阿里云提供的代理 https://mirrors.aliyun.com/goproxy/，或者 Go 官方提供的全球代理 https://goproxy.io。 
 
+go env -w GOPROXY=https://goproxy.cn,direct
+
    、、go 代码使用 import google.golang.org/grpc 时候可能会出错 ，需要在命令行：go mod tidy
 	在项目目录下打开终端，执行go mod tidy解决，这个命令会删除不需要的依赖包、下载新的依赖包、更新go.sum
 ********************************************************************************************************************************************************* 
