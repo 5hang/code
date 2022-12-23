@@ -213,7 +213,7 @@ docker run -d -p 8080:8080 --name tm1  billygoo/tomcat8-jdk8
 docker运行mysql
 docker pull mysql:5.7
 docker run -d -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7  简单
-docker run -d -p 3306:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  -v /tmp/mysql/data:/var/lib/mysql  -v /tmp/mysql/conf:/etc/mysql/conf.d  -e MYSQL_ROOT_PASSWORD=123456   --name mysql  mysql:5.7              正式
+docker run -d -p 3306:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  -v /tmp/mysql/data:/var/lib/mysql  -v /tmp/mysql/conf:/etc/mysql/conf.d  -e MYSQL_ROOT_PASSWORD=123456   --name mysql  mysql:5.7
  
 这里增加的卷的配置，即使删除了docker实例  ，重新执行运行一次 ，又可以回来了
 docker中MySQL的字符编码默认配置错误需要修改的 
