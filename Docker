@@ -219,14 +219,14 @@ docker run -d -p 3306:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  
 这里增加的卷的配置，即使删除了docker实例  ，重新执行运行一次 ，又可以回来了
 docker中MySQL的字符编码默认配置错误需要修改的 
 *************************************************** 进入/tmp/mysql/conf
-[root@xxx conf]# vi my.cnf  
-[client]
+[root@xxx conf]# vi my.cnf      这里的my.cnf  会同步到 /etc/mysql/conf.d/下面去，，重启mysql 就生效了奥
+[client]  
 default_character_set=utf8
 [mysqld]
 collation_server = utf8_general_ci
 character_set_server = utf8
 ***************************************************
-重启mysql 
+重启mysql                  
 docker restart mysql
 
 
