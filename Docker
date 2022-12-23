@@ -254,8 +254,8 @@ MariaDB [mysql]> flush privileges;  //刷新权限
 MariaDB [mysql]> update user set host = "localhost" where user = "root" and host = "%";
 ***************************************************
 docker运行redis
-docker pull redis:7.0.2
-docker run -p 4000:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis:7.0.2  redis-server /etc/redis/redis.conf
+docker pull redis 
+docker run -p 6379:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis  redis-server /etc/redis/redis.conf
 
 
 docker run -it ubuntu /bin/bash
