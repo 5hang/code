@@ -241,8 +241,17 @@ docker restart mysql
 | character_set_server     | utf8                       |
 | character_set_system     | utf8                       |
 | character_sets_dir       | /usr/share/mysql/charsets/ |
-+--------------------------+----------------------------+
-
++--------------------------+----------------------------+vs
+**************************mysql 访问权限设置************************** mysql user表是 user host的联合主键奥
+ 开启MySQL/MariaDB的远程访问权限
+MariaDB [mysql]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456';    //这句话的意思是：赋予所有权限给'root'这个用户(也可以是其他用户比如'zhangsan')，在 '%'这台主机（%表示任何主机，也可以改为具体的192.168.1.20这个主机）上使用"123456"这个密码登陆数据库；
+MariaDB [mysql]>  flush privileges;   //更新权限；
+MariaDB [mysql]>  select user,host,password from user;   //查询是否设置成功，成功后即可使用工具远程连接数据库
+删除用户
+MariaDB [mysql]> DELETE FROM user WHERE User="root" and Host="%";   //删除刚才新建的root用户和允许登陆的主机%;
+MariaDB [mysql]> flush privileges;  //刷新权限
+（禁用）用户和主机的远程访问的权限；
+MariaDB [mysql]> update user set host = "localhost" where user = "root" and host = "%";
 ***************************************************
 docker运行redis
 docker pull redis:7.0.2
