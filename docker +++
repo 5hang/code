@@ -1,0 +1,5 @@
+
+
+docker inspect 容器ID
+
+docker -v  挂在的目录必须是绝对的路径
