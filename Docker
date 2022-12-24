@@ -254,10 +254,8 @@ MariaDB [mysql]> flush privileges;  //刷新权限
 MariaDB [mysql]> update user set host = "localhost" where user = "root" and host = "%";
 ***************************************************
 
-
-
-docker运行redis
-docker pull redis:6.2.8
+ 
+docker pull redis:6.2.6
 
 redis 6.2.6  源码安装
 yum install -y gcc
