@@ -1,17 +1,13 @@
- centos 7 安装docker 要求64位， linux内核 3.8+
+centos 7 安装docker 要求64位， linux内核 3.8+
+cat /etc/redhat-release
+uname -r
  
- **********************安装前提***************
- cat   /etc/redhat-release
- uname -r
- 
- docker-compose 安装
+docker-compose 安装
 curl -L https://get.daocloud.io/docker/compose/releases/download/v2.4.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose -v 
 
- 
- Uninstall old versions
- 
+  
  docker 卸载
  sudo yum remove docker \
                   docker-client \
@@ -22,10 +18,10 @@ docker-compose -v
                   docker-logrotate \
                   docker-engine
             
- systemctl stop docker
- yum remove  docker-ce docker-ce-cli  containerd.io
- rm -rf /var/lib/docker
- rm -rf /var/lib/containerd
+systemctl stop docker
+yum remove  docker-ce docker-ce-cli  containerd.io
+rm -rf /var/lib/docker
+rm -rf /var/lib/containerd
  
 安装相关环境
 yum -y install gcc
@@ -70,51 +66,29 @@ sudo tee /etc/docker/daemon.json <<-'EOF'
 }
 EOF
 
-*************************************************************************
-
 sudo systemctl daemon-reload
 sudo systemctl restart docker
- *************************************************************
- 
- 
- docker 常用命令
- 帮助启动类：
-           systemctl start docker
-           systemctl stop docker
-           systemctl restart docker 
-           systemctl status docker 
-           systemctl enable docker
-           docker info 
-           docker --help
- 
- 镜像命令类：
-************** docker images   -a 列出本地所有镜像，-q只显示镜像的id
- REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
-hello-world   latest    feb5d9fea6a5   12 months ago   13.3kB
- 仓库源          版本        
 
-************** docker search xxx            搜索远程仓库是否有某个镜像，                                  官方认证了
- [root@192 zhangsan]# docker search hello-world
-NAME                                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
-hello-world                                Hello World! (an example of minimal Dockeriz…   1859      [OK]       
-                                                                   0       
-************** docker pull 镜像名字ID：TAG
-  docker pull redis:6.2
-  docker pull ubuntu
-  docker pull centos
+
+ docker 常用命令 
+docker info 
+docker --help
   
-************** docker system df 查看镜像容器占用空间
+ docker images   -a 列出本地所有镜像，-q只显示镜像的id 
 
-**************   删除本地所有镜像
+docker search xxx            搜索远程仓库是否有某个镜像 
+
+docker pull 镜像名字ID：TAG
+docker pull redis:6.2
+docker system df 查看镜像容器占用空间
+
 docker rmi -f $(docker images -qa)
 
-**************    删除本地停止运行的容器
 sudo docker rm $(sudo docker ps -a -q)
 
-************** docker rmi xxx  删除本地的镜像
-      docker rmi -f  IMAGE ID
-      docker rmi -f  hello-world
-      
+docker rmi -f  IMAGE ID
+docker rmi -f  hello-world
+
  容器命令：
     docker run xx  启动交互式容器
 
@@ -126,30 +100,20 @@ sudo docker rm $(sudo docker ps -a -q)
     
     -P:随机端口
     -p：指定端口映射  -p  8080:80
- 
-root@192 zhangsan]# docker run -it  ubuntu /bin/bash   启动交互式容器
-root@0a2384bf7fed:/# exit 
-
-docker run -it  --name="aaa"  ubuntu  /bin/bash  
-
-docker ps 列出所有运行中的实例
-[root@192 zhangsan]# docker ps
-CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES
-ae0591d1d13e   ubuntu    "/bin/bash"   2 seconds ago   Up 2 seconds             boring_williamson
-
+   
 docker ps -a  列出所有的容器 包含停止运行的容器
 docker ps     列出运行的容器
 docker ps -q  列出的内容只包含名字
 
- 容器的推出机制：
-   run进去的容易 exit 推出，容器会停止的
-   ctrl+p+q： 这种方式推出，容器不会停止
-   
- 启动已经停止运行的容器：docker start 容器id或者名字
- 重启容器：docker restart 容器id或者名字
- 停止容器：docker stop   容器id或者名字
- 强制停止容器： docker kill 容器id或者名字
- 删除停止运行的容器：docker rm 容器id或者名字
+容器的推出机制：
+run进去的容易 exit 推出，容器会停止的
+ctrl+p+q： 这种方式推出，容器不会停止
+
+启动已经停止运行的容器：docker start 容器id或者名字
+重启容器：docker restart 容器id或者名字
+停止容器：docker stop   容器id或者名字
+强制停止容器： docker kill 容器id或者名字
+删除停止运行的容器：docker rm 容器id或者名字
  
 docker ps -n 2
 CONTAINER ID   IMAGE     COMMAND                 CREATED         STATUS                     PORTS     NAMES
@@ -210,6 +174,9 @@ docker运行tomcat
 docker pull billygoo/tomcat8-jdk8   不用最新的版本tomcat  默认访问没有那一直猫
 docker run -d -p 8080:8080 --name tm1  billygoo/tomcat8-jdk8
 
+
+
+*******************************************************************Docker 部署***********************************************************************************
 docker运行mysql
 docker pull mysql:5.7
 docker run -d -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7  简单
