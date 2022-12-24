@@ -253,21 +253,78 @@ MariaDB [mysql]> flush privileges;  //刷新权限
 （禁用）用户和主机的远程访问的权限；
 MariaDB [mysql]> update user set host = "localhost" where user = "root" and host = "%";
 ***************************************************
+
+
+
 docker运行redis
-docker pull redis 
+docker pull redis:6.2.8
 
- 
+redis 6.2.6  源码安装
+yum install -y gcc
+cd /usr/local
+wget https://download.redis.io/releases/redis-6.2.6.tar.gz
+tar -zxvf redis-6.2.6.tar.gz
+cd redis-6.2.6
+make install PREFIX=/usr/local/redis
+cp /usr/local/redis-6.2.6/redis.conf /usr/local/redis/bin/
+cd /usr/local/redis/bin/
+vi redis.conf
 
+*********************************redis 配置解读************************
+daemonize yes         #后台启动
+pidfile /var/run/redis_6379.pid
+logfile ""
+databases 16
+dbfilename dump.rdb
+dir ./
+
+bind 127.0.0.1 0.0.0.0       # 设置本地访问 
+port 6379
+protected-mode yes           #开启保护模式
+requirepass 123456           #访问的密码
+
+save 3600 1
+save 300 100
+save 60 10000
+
+# maxmemory <bytes>  #可以指定最大内存使用 ，默认无限制内存
+# maxmemory 1GB 
+appendonly no
+appendfilename "appendonly.aof"
+
+***************************下面是dockers 安装reids：6.2.6 详解 ***************************
 docker run -p 6379:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis  redis-server /etc/redis/redis.conf
+docker 启动 reids 带指定配置文件时候  ，可以遵循下面的改动 首先复制一个完整的 redis.conf  放在/tmp/reids/下面  然后修改参数
+redis:  镜像的启动目录就是 /data    
+*********************************************************************************
+daemonize no          # 这个参数 和 -d  是冲突哦的  二选一 （如果用docker启动redis  这个就要是no的奥）
+pidfile  /data/redis_6379.pid
+logfile "/data/redis.log" 
+dbfilename dump.rdb
+dir /data
+bind 0.0.0.0
+protected-mode yes      
+requirepass 123456   
+*********************************************************************************
+./redis-cli  shutdown                    #无密码关闭redis
+./redis-cli  -a 123456  shutdown        #有密码关闭redis
+
+如果不配置bind，redis将监听本机所有可用的网络接口。
+我们想要其他机连接我们的Redis服务，有三种方式：
+想办法让Redis运行在protected-mode为no的模式。
+如果protected-mode为yes，那么我们可以在Redis服务上设置bind，也就是我们的一台机器有几个ip，指定我们的服务绑定监听本机的哪个ip。
+如果protected-mode为yes，除了设置bind外，亦可通过设置密码的形式，也即是设置参数requirepass，从而达到可以从其他机器访问的目标。
+实践总结
+我们在redis的配置文件中会遇到protected-mode，它直译为保护模式。
+如果设置为yes，那么只允许我们在本机的回环连接，其他机器无法连接。
+线上Redis服务，为了安全，我们建议将protected-mode设置为yes。
+protected-mode设置为yes的情况下，为了我们的应用服务可以正常访问Redis，我们需要设置Redis的bind参数或者密码参数requirepass。
 
 
-docker run -it ubuntu /bin/bash
-apt-get update
-apt-get -y install vim 
-新打开一个窗口  docker ps 6f413cdb0540
-docker commit -m="with vim" -a="xxx" 6f413cdb0540  myubuntu:1.2
-sha256:a2178fb15d8d820c399e73c919e2bae6ad2d2ffccdd61fe2a592e33f360c0f47
 
-docker images  新创建的镜像就有了
 
+
+
+  
+ 
  
