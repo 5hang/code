@@ -69,12 +69,11 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
-
- docker 常用命令 
+docker version
 docker info 
 docker --help
   
- docker images   -a 列出本地所有镜像，-q只显示镜像的id 
+docker images   -a 列出本地所有镜像，-q只显示镜像的id 
 
 docker search xxx            搜索远程仓库是否有某个镜像 
 
@@ -125,10 +124,15 @@ docker 后台启动：
 docker run -d centos   注意：docker容器后台的运行，就必须有一个前台的进程，否则自动推出了
 docker run -d redis:6.2
 
-docker logs   容器id或者名字   ---查看容器的日志
-docker top    容器id或者名字   ---查看容器的运行进程信息
-docker inspect 容器id或者名字  --- 查看容器的信息
+docker logs  -f  容器id或者名字   ---实时监控的查看容器的日志
+docker logs     容器id或者名字   ---查看容器的日志
+docker top      容器id或者名字   ---查看容器的运行进程信息
+docker inspect  容器id或者名字  --- 查看容器的信息
 
+数据卷
+docker  run -v  宿主机路径：容器内部路径   这种方式会以宿主机的内容为主，如果宿主机内容是空，那么第一次回把容器中的内容清空的
+docker  run -v   aa别名:容器内部路径       使用别名创建的路径映射会以容器中的内容为主 
+                 别名默认的路径在 /var/lib/docker/volumes 下 的
 
 docker exec -it 83af7f5ea148  bash   重新进入或者的容易，并且交互  （默认用这个的）
 docker attach 容器id            （就是它进入后执行exit会导致容器停止）           
