@@ -203,6 +203,11 @@ character_set_server = utf8
 重启mysql                  
 docker restart mysql
 
+# docker 备份mysql 数据库数据的命令     备份所有数据库
+$ docker exec mysql容器ID  sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > /root/all-databases.sql
+                                       备份指定数据库
+$ docker exec mysql容器ID  sh -c 'exec mysqldump  databases 库的名字 -uroot -p"$MYSQL_ROOT_PASSWORD"' > /root/库的名字.sql
+
 
 > SHOW  VARIABLES LIKE 'character%';
 +--------------------------+----------------------------+
