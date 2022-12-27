@@ -1,0 +1,119 @@
+**************************************************  docker-compose 部署 Etcd 集群  **************************************************
+
+https://www.yht7.com/news/197056   #参考
+
+volumes:  ./data 一定要赋予 777 权限奥
+--------------------------------------------------------------------141  142  148 三个节点-------------------------------------------------------
+--------------------------------------------------------------------etcd1.yml--------------------------------------------------------------------
+version: "3.8"
+services:
+  etcd1:
+    image: bitnami/etcd:3.5.0
+    container_name: etcd1
+    restart: always
+    networks:
+      - helloworld
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes #示例中我们不设置密码
+      - ETCD_NAME=etcd1 #节点自己的名字
+      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.13.148:2379  #告知集群自己的客户端地址
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 #设置监听客户端通讯的URL列表
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://192.168.13.148:2380 #告知集群自己集群通讯地址
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380 #用于监听伙伴通讯的URL列表
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
+      - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
+      - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+    volumes:
+      - ./data:/bitnami/etcd
+networks:
+  helloworld:
+--------------------------------------------------------------------etcd2.yml--------------------------------------------------------------------
+version: "3.8"
+services:
+  etcd2:
+    image: bitnami/etcd:3.5.0
+    container_name: etcd2
+    restart: always
+    networks:
+      - helloworld
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes #示例中我们不设置密码
+      - ETCD_NAME=etcd2 #节点自己的名字
+      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.13.141:2379  #告知集群自己的客户端地址
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 #设置监听客户端通讯的URL列表
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://192.168.13.141:2380 #告知集群自己集群通讯地址
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380 #用于监听伙伴通讯的URL列表
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
+      - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
+      - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+    volumes:
+      - ./data:/bitnami/etcd
+networks:
+  helloworld:
+--------------------------------------------------------------------etcd3.yml--------------------------------------------------------------------
+version: "3.8"
+services:
+  etcd3:
+    image: bitnami/etcd:3.5.0
+    container_name: etcd3
+    restart: always
+    networks:
+      - helloworld
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes #示例中我们不设置密码
+      - ETCD_NAME=etcd3 #节点自己的名字
+      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.13.142:2379  #告知集群自己的客户端地址
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 #设置监听客户端通讯的URL列表
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://192.168.13.142:2380 #告知集群自己集群通讯地址
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380 #用于监听伙伴通讯的URL列表
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
+      - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
+      - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+    volumes:
+      - ./data:/bitnami/etcd
+networks:
+  helloworld:
+  
+  
+  
+  
+  查看集群成员
+  I have no name!@555187fb758c:/opt/bitnami/etcd$ etcdctl --write-out=table  member list
++------------------+---------+-------+--------------------------+--------------------------+------------+
+|        ID        | STATUS  | NAME  |        PEER ADDRS        |       CLIENT ADDRS       | IS LEARNER |
++------------------+---------+-------+--------------------------+--------------------------+------------+
+| 57d6f74aaa8d5d3e | started | etcd1 | http://10.10.239.31:2380 | http://10.10.239.31:2379 |      false |
+| 9107e491ab549324 | started | etcd3 | http://10.10.239.33:2380 | http://10.10.239.33:2379 |      false |
+| e7b147006e212ca5 | started | etcd2 | http://10.10.239.32:2380 | http://10.10.239.32:2379 |      false |
++------------------+---------+-------+--------------------------+--------------------------+------------+
+
+查看本节点状态
+I have no name!@555187fb758c:/opt/bitnami/etcd$ etcdctl --write-out=table  endpoint status
++----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|    ENDPOINT    |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| 127.0.0.1:2379 | 57d6f74aaa8d5d3e |   3.5.4 |   20 kB |      true |      false |         2 |         10 |                 10 |        |
++----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+
+查看本节点健康状态
+I have no name!@555187fb758c:/opt/bitnami/etcd$ etcdctl --write-out=table  endpoint health
++----------------+--------+------------+-------+
+|    ENDPOINT    | HEALTH |    TOOK    | ERROR |
++----------------+--------+------------+-------+
+| 127.0.0.1:2379 |   true | 3.736825ms |       |
++----------------+--------+------------+-------+
+
+进去一个容器节点 设置数据  进入另一个节点获取数据
+I have no name!@788dd01aaa79:/opt/bitnami/etcd$ etcdctl put name "liubei"
+I have no name!@555187fb758c:/opt/bitnami/etcd$ etcdctl get name
+
+
