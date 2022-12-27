@@ -2,7 +2,8 @@ centos 7 安装docker 要求64位， linux内核 3.8+
 cat /etc/redhat-release
 uname -r
  
-docker-compose 安装
+一 .**************************************************安装 docker-compose**************************************************
+
 curl -L https://get.daocloud.io/docker/compose/releases/download/v2.4.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose -v 
@@ -12,15 +13,16 @@ docker-compose -v
 docker pull xx  bug   
 需要重启docker 的
   
- docker 卸载
- sudo yum remove docker \
-                  docker-client \
-                  docker-client-latest \
-                  docker-common \
-                  docker-latest \
-                  docker-latest-logrotate \
-                  docker-logrotate \
-                  docker-engine
+二 .**************************************************安装 docker**************************************************
+docker 卸载
+sudo yum remove docker \
+            docker-client \
+            docker-client-latest \
+            docker-common \
+            docker-latest \
+            docker-latest-logrotate \
+            docker-logrotate \
+            docker-engine
             
 systemctl stop docker
 yum remove  docker-ce docker-ce-cli  containerd.io
@@ -48,7 +50,7 @@ sudo tee /etc/docker/daemon.json <<-'EOF'
 }
 EOF
 
-*****************************安装k8s  calico 网络需要加的***************************************
+----------------------------------安装k8s  calico 网络需要加的----------------------------------
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
   "registry-mirrors": [
@@ -72,6 +74,9 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+
+
+三 .************************************************** docker 常用命令**************************************************
 
 docker version
 docker info 
@@ -146,10 +151,10 @@ docker attach 容器id            （就是它进入后执行exit会导致容器
 
 
 镜像的备份和回复
-********************************************
+----------------------------------
 docker save redis:6.2.6 -o  redis6.2.6.tar
 docker load -i redis6.2.6.tar
-********************************************
+----------------------------------
 
 docker cp 容器ID：容器路径   目的主机路径  在主机外部执行
 
@@ -158,7 +163,7 @@ docker export 容器ID > xxx.tar  把整个容器备份
 cat xxx.tar | docker import -镜像用户/镜像名字：版本号  （相当于在本地创建这个镜像）docker -ps 查询看
 
 
-镜像的分层：联合文件系统，********************************
+镜像的分层：联合文件系统
 
 docker文件有一层层文件系统组成
 
@@ -170,7 +175,6 @@ docker分层 就是为了资源共享，方便迁移，复用的。
 
 docker commit -m ="提交的描述信息"  -a="作者"  容器id 目标镜像名字：标签  
 
-***************************************************
 -------------------------------------- 宿主机：容器  之间的路径 数据共享
 docker run -it --privileged=true  -v /tmp/host_data:/tmp/docker_data --name-uu1 ubuntu
 
@@ -188,7 +192,8 @@ docker run -d -p 8080:8080 --name tm1  billygoo/tomcat8-jdk8
 
 
 
-*******************************************************************Docker 部署***********************************************************************************
+四 .**************************************************  docker 部署 MySQL **************************************************
+
 docker运行mysql
 docker pull mysql:5.7
 docker run -d -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7  简单
@@ -196,14 +201,14 @@ docker run -d -p 3306:3306 --privileged=true  -v /tmp/mysql/log:/var/log/mysql  
  
 这里增加的卷的配置，即使删除了docker实例  ，重新执行运行一次 ，又可以回来了
 docker中MySQL的字符编码默认配置错误需要修改的 
-*************************************************** 进入/tmp/mysql/conf
+------------------------------------------------------- 进入/tmp/mysql/conf
 [root@xxx conf]# vi my.cnf      这里的my.cnf  会同步到 /etc/mysql/conf.d/下面去，，重启mysql 就生效了奥
 [client]  
 default_character_set=utf8
 [mysqld]
 collation_server = utf8_general_ci
 character_set_server = utf8
-***************************************************
+-------------------------------------------------------
 重启mysql                  
 docker restart mysql
 
@@ -228,7 +233,7 @@ $ docker exec mysql容器ID  sh -c 'exec mysqldump  --node-data databases 库的
 | character_set_system     | utf8                       |
 | character_sets_dir       | /usr/share/mysql/charsets/ |
 +--------------------------+----------------------------+vs
-**************************mysql 访问权限设置************************** mysql user表是 user host的联合主键奥
+----------------------------------mysql 访问权限设置---------------------------------- mysql user表是 user host的联合主键奥
  开启MySQL/MariaDB的远程访问权限
 MariaDB [mysql]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456';    //这句话的意思是：赋予所有权限给'root'这个用户(也可以是其他用户比如'zhangsan')，在 '%'这台主机（%表示任何主机，也可以改为具体的192.168.1.20这个主机）上使用"123456"这个密码登陆数据库；
 MariaDB [mysql]>  flush privileges;   //更新权限；
@@ -238,9 +243,9 @@ MariaDB [mysql]> DELETE FROM user WHERE User="root" and Host="%";   //删除刚�
 MariaDB [mysql]> flush privileges;  //刷新权限
 （禁用）用户和主机的远程访问的权限；
 MariaDB [mysql]> update user set host = "localhost" where user = "root" and host = "%";
-***************************************************
 
- 
+
+五 .**************************************************  docker 部署 Redis **************************************************
 docker pull redis:6.2.6
 
 redis 6.2.6  源码安装
@@ -254,7 +259,7 @@ cp /usr/local/redis-6.2.6/redis.conf /usr/local/redis/bin/
 cd /usr/local/redis/bin/
 vi redis.conf
 
-*********************************redis 配置解读************************
+----------------------------------redis 配置解读----------------------------------
 daemonize yes         #后台启动
 pidfile /var/run/redis_6379.pid
 logfile ""
@@ -276,20 +281,18 @@ save 60 10000
 appendonly no
 appendfilename "appendonly.aof"
 
-***************************下面是dockers 安装reids：6.2.6 详解 ***************************
-docker run -p 6379:6379  --name redis --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis  redis-server /etc/redis/redis.conf
+----------------------------------下面是dockers 安装reids：6.2.6 详解 ----------------------------------
+docker run -p 6379:6379  --name redis --restart=always --privileged=true -v /tmp/redis/redis.conf:/etc/redis/redis.conf  -v /tmp/redis/data:/data -d redis:6.2.6  redis-server /etc/redis/redis.conf
 docker 启动 reids 带指定配置文件时候  ，可以遵循下面的改动 首先复制一个完整的 redis.conf  放在/tmp/reids/下面  然后修改参数
 redis:  镜像的启动目录就是 /data    
-*********************************************************************************
-daemonize no          # 这个参数 和 -d  是冲突哦的  二选一 （如果用docker启动redis  这个就要是no的奥）
-pidfile  /data/redis_6379.pid
-logfile "/data/redis.log" 
-dbfilename dump.rdb
-dir /data
+
+！！！！！！！！！！！！ redis 指定配置文件启动时候 不要复制一个完整的配置文件奥，要以append的方式覆盖你需要修改的配置  不能吧人家原来的配置覆盖了奥
+------------------------------------------------------------------------------------------------------
+#daemonize no          # 这个参数 和 -d  是冲突哦的  二选一 （如果用docker启动redis  这个就要是no的奥）
 bind 0.0.0.0
-protected-mode yes      
 requirepass 123456   
-*********************************************************************************
+appendonly yes              #注意  这个是建议开启的，如果开启了appendonly 恢复日志的时候，优先用这个恢复的
+------------------------------------------------------------------------------------------------------
 ./redis-cli  shutdown                    #无密码关闭redis
 ./redis-cli  -a 123456  shutdown        #有密码关闭redis
 
@@ -305,10 +308,314 @@ requirepass 123456
 protected-mode设置为yes的情况下，为了我们的应用服务可以正常访问Redis，我们需要设置Redis的bind参数或者密码参数requirepass。
 
 
+六 .**************************************************  docker 部署 MongoDB **************************************************
+关闭selinux
+vim /etc/selinux/config
+SELINUX=disabled
+yum install -y libcurl openssl
 
+解压 mongodb-linux-x86_64-rhel70-4.2.23.tgz 到 /usr/local/mongo 下
+cd /usr/local/mongo/bin/
+vim ./mongodb.conf
+mkdir  data log 
+--------------------------------------------------------------------
+systemLog:
+    destination: file
+    logAppend: true
+    path: ./log/mongodb.log
 
+# Where and how to store data.
+storage:
+    dbPath: ./data
+    journal:
+        enabled: true
+#  engine:
+#  wiredTiger:
+# how the process runs
+processManagement:
+    fork: true  # fork and run in background
+    pidFilePath:  ./mongod.pid  # location of pidfile
+    timeZoneInfo: /usr/share/zoneinfo
 
-
-  
+# network interfaces
+net:
+    port: 27017
+    bindIp: 0.0.0.0  # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
+------------------------------------------------------------------------------------------------------
+./mongod -f  ./mongo.conf  启动mongo
+./mongod -f  mongo.conf --shutdown  关闭mongo
  
+
+
+docker pull mongo:4.2
+
+无账户密码，不需要认证
+docker run -d --name mongo --restart always --privileged -p 27017:27017 -v /tmp/mongo/configdb:/data/configdb -v /tmp/mongo/db:/data/db mongo:4.2
+有账户密码，需要认证（推荐）
+docker run -d --name mongo --restart always --privileged -p 27017:27017 -v /tmp/mongo/configdb:/data/configdb -v /tmp/mongo/db:/data/db -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 mongo:4.2  mongod --auth 
+
+如果不知道镜像的挂在，就用 docker  inspect  ID "Mounts"
+
+
+七 .**************************************************  docker 部署 Kafka 3.3.1 + Zookeeper 3.6.3 **************************************************
+
+Kafka zookeeper 的对应关系
+https://blog.csdn.net/Saintmm/article/details/124073256
+下载kafka 源码包   找到dependencies.gradle   zookeeper: "3.6.3",  里面有zookeeper的版本信息
+
+安装    apache-zookeeper-3.6.3.bin.tar.gz 并解压    zookeeper 3.5  +  要下载带bin后缀的奥
+mv zookeeper3.6.3/  /usr/local/
+cd /usr/local/zookeeper3.6.3/conf/
+mv zoo_sample.cfg zoo.cfg                             #启动zookeeper 默认回去找zk/conf/zoo.cfg
+cd ..  mkdir data   新建zookeeper数据存放目录
+修改zookeeper的数据存放目录vi zoo.cfg
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/usr/local/zookeeper3.6.3/data
+clientPort=2181
+
+启动zookeeper
+./zkServer.sh start
+/usr/bin/java
+ZooKeeper JMX enabled by default
+Using config: /usr/local/zookeeper3.6.3/bin/../conf/zoo.cfg
+Starting zookeeper ... FAILED TO START
+
+./zkServer.sh start-foreground
+停止
+./zkServer.sh stop
+
+连接登录zookeeper
+./zkCli.sh
+
+
+在 dockerhub 上 kafka 相关镜像有 wurstmeister/kafka 和 bitnami/kafka 这两个用的人比较多,大概看了下 bitnami/kafka 更新比较频繁所以就选这个了。
  
+----------------------------------------------------------------------------------------------------------------------------------------
+新老版本kafka 连接 zookeeper 的方式不一样的奥  [--zookeeper localhost:2181]  [--bootstrap-server localhost:9092]
+
+#老版本创建kafka -- 主题
+./kafka-topics.sh --create --zookeeper localhost:2181        --replication-factor 1 --partitions 1 --topic test
+#新版本创建kafka -- 主题
+./kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic hello
+#查看 -- 主题 (查看注意的方式 通过localhost   ，   ip  ) 根据 配置中listeners：这个字段的配置决定的奥
+./kafka-topics.sh --list  --bootstrap-server localhost:9092
+./kafka-topics.sh --list  --bootstrap-server 192.168.13.148:9092
+
+#如果kafka 启动失败 ，  删除data目录下的meta.properties文件，重启kafka
+log.dirs=/usr/local/kafka3.3.1/kafka-logs
+
+; zookeeper.connect=192.168.13.148:2181   创建主题和查看主题  的链接方式要和这个一样的奥
+----------------------------------Kafka 3.3.1 配置  (server.properties) ----------------------------------
+#保证唯一
+broker.id=0
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+#配置日志存放文件夹路径
+log.dirs=/usr/local/kafka3.3.1/kafka-logs
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.check.interval.ms=300000
+#zookeeper的地址和端口号
+zookeeper.connect=localhost:2181
+zookeeper.connection.timeout.ms=18000
+group.initial.rebalance.delay.ms=0
+
+# 这个 不配就是 localhost  那么本机连接他就用localhost 即可，
+# 如果这个配置改成了 PLAINTEXT://IP:9092  那么本机连接他就要用 IP:9092了
+#listeners=PLAINTEXT://localhost:9092
+----------------------------------------------------------------------------------------------------------------------------------------
+docker 搭建 zookeeper + Kafka
+
+docker pull zookeeper:3.6.3
+docker pull bitnami/kafka:3.3.1
+
+docker exec  进入kafka  entrypoint.sh 里面有相关kafka 环境配置
+
+kafka 命令详解
+https://zhuanlan.zhihu.com/p/143921312?utm_source=wechat_session
+
+
+八 .**************************************************  docker 部署 Nginx **************************************************
+
+mkdir /tmp/nginx  
+cd    /tmp/nginx
+
+docker run --name nginx -d   nginx:1.20
+docker cp b8409cd6ab45:/etc/nginx/nginx.conf ./
+docker stop nginx
+docker rm nginx
+
+一：nginx 作为负载均衡使用    html 目录下放资源文件的奥
+docker run -p 80:80 -d --restart=always --name nginx -v /tmp/nginx/nginx.conf:/etc/nginx/nginx.conf nginx:1.20
+二：nginx 作为服务器使用
+docker run -p 80:80 -d --restart=always --name nginx -v /tmp/nginx/html:/usr/share/nginx/html  nginx:1.20
+三： nginx 作为服务器 + 负载均衡使用
+docker run -p 80:80 -d --restart=always --name nginx -v /tmp/nginx/nginx.conf:/etc/nginx/nginx.conf -v /tmp/nginx/html:/usr/share/nginx/html nginx:1.20
+
+
+九 .************************************************** docker 网络 + 数据卷 **************************************************
+
+# docker network ls   【这是默认的网络】
+NETWORK ID     NAME      DRIVER    SCOPE
+56ad7afd7de9   bridge    bridge    local
+e8d8d0580bfd   host      host      local
+4f3532919680   none      null      local
+
+
+网络总结：
+    1：默认使用docker创建的容器 所有的容器都是连接在docker0网桥上面的，默认docker0网桥上面所有的容器都可以通过ip进行通信的
+    2：使用容器名称来同行的，必须自定义网桥，不能使用默认的docker0
+
+docker network create -d bridge 网络名称
+docker network ls
+docker network inspect name   查看这个网络的详细
+docker network rm      name
+docker network prune   删除没用到的网桥
+
+容器运行在指定的网络中
+1：启动时候指定
+    docker run --network name
+2：启动后加入网桥
+    docker network connect  网络名  容器id/name
+--------------------------------------------------------------------
+docker volume  数据卷别名的使用
+通过别名创建的数据卷是由 docker自己维护的 
+docker volume ls  查看
+docker volume inspect 别名
+docker volume rm      别名
+docker volume create  别名
+
+
+
+十 .**************************************************  Dockerfile 命令  **************************************************
+
+
+Dockerfile 语法
+
+docker build -f dockerfile -t aaa:1.0 .  (. 指定dockerfile所在的位置)
+执行上面 会把. 目录所有东西发送给docke服务器
+
+dockerfile  里面构建的每一步 都会构建一个临时镜像 放在缓存中的 --no-cache
+EXPOSE  8080 #声明对外的端口可以多个
+EXPOSE  8081 #
+
+WORKDIR /var/test  #默认进入的位置  ，如果不存在这个位置就会创建
+WORKDIR  data      #如果写的是相对路径  就是相对默认位置的
+ADD  text.txt .    # 将text.txt cp 到 /var/test/data下   # 将 .  上下文的文件copy 到WORKDIR 当前的位置奥   ADD 可以 cp url  下载到当前位置
+ENV  path=/var
+VOLUME  /data      # 仅仅是声明 挂在的位置 ，不写这个 你也可以挂在的
+
+CMD  #可以存在多个  只有最后一个生效
+ENTRYPOINT 
+
+CMD ls /data    # 如果运行镜像后面还有其他的命令的话  会把cmd 命令覆盖的奥
+CMD ["ls","/data"] 
+# ENTRYPOINT 如果执行镜像后面带了命令 默认不覆盖的  如果你要覆盖  需要这么写  docker run   --entrypoint=ls redis:6.2.6 /data    // 覆盖原来的ls 命令 
+
+#  命令有 sh 脚本 和json 2种   json的命令是可以覆盖的奥
+
+正常使用应该是 cmd 和 entrypoint 配合使用的
+ENTRYPOINT ["ls"]
+CMD  ["/data"]
+
+十一 .**************************************************  docker-compose 命令  **************************************************
+
+docker-compose 语法
+
+docker 与 docker-compose 的版本的对应关系   version: "3.0"
+https://docs.docker.com/compose/compose-file/compose-file-v3/
+
+ports:
+- 80:80
+- "90:90"  #数组的  可以用 ""  这个
+
+volumes:
+    -v /var/mysql/data:/var/lib/mysql   # 在docker-compose 使用绝对路径  那么这个路径必须存在的奥
+    -v name:/var/lib/mysql              # 在docker-compose 中使用别名 必须先声请，后使用的奥
+
+volumes:
+    msqlData: #声明数据卷别名
+
+
+docker-compose down   #清除启动的缓存
+
+----------------------------------docker-compose 模板指令----------------------------------   
+
+nginx: 
+    build:                      #指定 dockerfile的上下文路径   build 和  image 在一个容器中不能同时存在的奥
+      context: ./config/nginx   #build指定 先从指定的位置 根据根据 dockerfile  生产镜像 再运行镜像
+      dockerfile: Dockerfile    
+    posts:
+      - 80:80
+
+
+    command: ["xxx"]        #覆盖容器启动默认cmd的内容
+
+    container_name: #指定启动容器的名字
+
+    depends_on:      # 依赖先要启动的容器  
+        - redis
+
+    environment: #指定环境变量
+
+    env_file:    #指定环境变量文件
+     - ./aa.env  
+
+    expose: #一般和 build 这样的命令同时用 
+        -
+
+    networks: #用来指定容器启动用的网桥   docker-compose 中写的网桥 需要先声明才能用的奥
+        - dangdang
+    ports:  #宿主机和容器端口映射
+        -80:80
+    volumes:
+
+    restart: always
+       
+networks:
+  dangdang
+
+此外，还有包括 domainname, entrypoint, hostname, ipc, mac_address, privileged, read_only, shm_size, restart, stdin_open, tty, user, working_dir 
+
+
+*** docker-compose up             # 启动所有
+docker-compose up  redis      # 指定启动redis
+
+*** docker-compose down             # 关闭容器  并且移除网络  数据卷会保留的
+docker-compose down  redis      # 指定启动redis
+
+docker-compose  -f xxx up -d 
+
+docker-compose exec 服务id bash  #进入容器
+
+docker-compose restart 
+
+docker-compose top [容器id]  #查看进程
+docker-compose logs [容器id]  #查看进程
+
+可视化界面：
+
+十二 .**************************************************  docker 部署 Etcd  **************************************************
+
+
+用 bitnami/etcd:3.5.0 这个镜像 安装的etcd  如果设置 -v 挂在卷 ,那么一定要  chmod 777 /tmp/etcd_data  否则无法运行的奥
+docker run -d    --privileged=true  --name etcd -p 2379:2379 -p 2380:2380 -v /tmp/etcd_data:/bitnami/etcd --env ALLOW_NONE_AUTHENTICATION=yes --env ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379   bitnami/etcd:3.5.0
+docker run -d    --privileged=true  --name etcd -p 2379:2379 -p 2380:2380  --env ALLOW_NONE_AUTHENTICATION=yes --env ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379   bitnami/etcd:3.5.0
+
+
+etcd下载
+
+解压  etcd-v3.5.4-linux-amd64.tar.gz
+
+./etcd 启动服务
+
+后台启动 日志在  /tmp/etcd .log
