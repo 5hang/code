@@ -1,0 +1,119 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    container_name: mysql
+    networks:
+      - helloworld
+    volumes:
+      - ./components/mysql/data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    restart: always
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - 6379:6379
+    container_name: redis
+    networks:
+      - helloworld
+    volumes:
+      - ./components/redis/data:/data
+      #redis config file
+#      - ./components/redis/config/redis.conf:/etc/redis/redis.conf
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    command: redis-server --requirepass 123456 --appendonly yes
+
+  mongodb:
+    image: mongo:4.2
+    ports:
+      - 27017:27017
+    container_name: mongo
+    networks:
+      - helloworld
+    volumes:
+      - ./components/mongodb/data/db:/data/db
+      - ./components/mongodb/data/configdb:/data/configdb
+#    environment:
+#      - TZ=Asia/Shanghai
+#      # cache
+#      - wiredTigerCacheSizeGB=1
+    restart: always
+    command: --wiredTigerCacheSizeGB 1
+
+  zookeeper:
+    image: bitnami/zookeeper:3.6.3
+    ports:
+      - 2181:2181
+    container_name: zookeeper
+    networks:
+      - helloworld
+    volumes:
+      - /etc/localtime:/etc/localtime
+    environment:
+      TZ: Asia/Shanghai
+      ALLOW_ANONYMOUS_LOGIN: yes
+    restart: always
+
+  kafka:
+    image: bitnami/kafka:3.3.1
+    container_name: kafka
+    restart: always
+    user: root
+    networks:
+      - helloworld
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+    volumes:
+      - ./components/kafka/data:/bitnami/kafka
+    depends_on:
+      - zookeeper
+
+  etcd:
+    image: bitnami/etcd:3.5.0
+    container_name: etcd
+    volumes:
+      - ./components/etcd/data:/bitnami/etcd   #  /components/etcd /data  目录需要 chmod 777 data  否则无法运行的奥
+    ports:
+      - 2379:2379
+      - 2380:2380
+    networks:
+      - helloworld
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+
+  minio:
+    image: minio/minio
+    ports:
+      - 10005:9000
+      - 9090:9090
+    container_name: minio
+    networks:
+      - helloworld
+    volumes:
+      - ./components/minio/data:/data
+      - ./components/minio/config:/root/.minio
+    environment:
+      MINIO_ROOT_USER: user12345
+      MINIO_ROOT_PASSWORD: key12345
+    restart: always
+    command: minio server /data --console-address ':9090'
+
+networks:
+  helloworld:
