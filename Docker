@@ -481,8 +481,10 @@ docker network inspect name   查看这个网络的详细
 docker network rm      name
 docker network prune   删除没用到的网桥
 
-容器运行在指定的网络中
-1：启动时候指定
+host: 网络  模式 是个宿主机共享网络地址的
+
+容器运行在指定的网络中      默认创建的就 network 就是 bridge 模式 
+1：启动时候指定 
     docker run --network name
 2：启动后加入网桥
     docker network connect  网络名  容器id/name
