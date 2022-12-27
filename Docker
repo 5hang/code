@@ -7,6 +7,10 @@ curl -L https://get.daocloud.io/docker/compose/releases/download/v2.4.1/docker-c
 chmod +x /usr/local/bin/docker-compose
 docker-compose -v 
 
+
+!!!!!!!!Error response from daemon: Get "https://registry-1.docker.io/v2/": dial tcp: lookup registry-1.docker.io on 223.5.5.5:53: read udp 192.168.13.148:45488->223.5.5.5:53: i/o timeout
+docker pull xx  bug   
+需要重启docker 的
   
  docker 卸载
  sudo yum remove docker \
