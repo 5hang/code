@@ -1,0 +1,40 @@
+
+
+----------------------主 redis.conf-------------------- 
+requirepass 123456
+masterauth 123456
+----------------------从 redis.conf-------------------- 
+port 6379  #当前服务器docker内端口
+requirepass  123456 #当前服务器设置密码
+replicaof 192.168.13.148 6379 #主服务地址
+masterauth 123456 #主服务密码
+--------------------------------------------------------------------启动 redis ----------------------------------------------------------------------------------
+# 直接参数启动 redis 主机
+docker run -d --name redis-master --net=host -p 6379:6379 -v /tmp/redis-master:/data redis:6.2.6 redis-server --appendonly yes --requirepass 123456 --masterauth 123456
+
+# 直接参数启动 redis 从机
+docker run -d --name redis-slaver --net=host -p 6379:6379 -v /tmp/redis-slaver:/data redis:6.2.6 redis-server --appendonly yes --requirepass  123456 --replicaof 192.168.13.148 6379 --masterauth 123456
+
+--------------------------查看启动结果-----------------------------
+#进入redis的docker容器
+docker exec -it redis /bin/bash
+#进入redis
+redis-cli -p 6379
+#设置密码
+config set requirepass 123456
+#登录权限
+auth 123456
+#查看状态
+role
+#主库
+set aa 1234
+#从库查看
+get aa
+--------------------------哨兵配置文件 tmp-sentinel.conf-----------------------------------------
+sentinel monitor redis-master 192.168.13.148 6379 2     #redis-master 自己随便明s
+sentinel auth-pass redis-master 123456
+
+--------------------------启动 Redis-sentinel-------对应每个redis的节点启动一个哨兵即可------------------------------------------------------------------------------
+主机 从机 各自执行 docker 
+docker run -d --name redis-sentinel -p 26379:26379 -v $PWD/tmp-sentinel.conf:/sentinel.conf -v /tmp/redis-sentinel:/data redis:6.2.6 redis-sentinel /sentinel.conf
+ 
