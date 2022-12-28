@@ -31,6 +31,9 @@ set aa 1234
 #从库查看
 get aa
 --------------------------哨兵配置文件 tmp-sentinel.conf-----------------------------------------
+# redis sentinel 配置解析
+https://blog.csdn.net/sinat_36184075/article/details/107208175
+
 sentinel monitor redis-master 192.168.13.148 6379 2     #redis-master 自己随便明s
 sentinel auth-pass redis-master 123456
 
