@@ -3,6 +3,27 @@
 https://www.yht7.com/news/197056   #参考
 
 volumes:  ./data 一定要赋予 777 权限奥
+
+#docker网络名
+--network 
+#端口号可以这样写-p
+--publish
+--env ALLOW_NONE_AUTHENTICATION
+#设置成员节点的别名
+--env ETCD_NAME
+#广播到集群中本成员的监听客户端请求的地址
+--env ETCD_ADVERTISE_CLIENT_URLS
+#广播到集群中本成员的Peer监听通信地址
+--env ETCD_INITIAL_ADVERTISE_PEER_URLS
+#客户端请求的监听地址列表
+--env ETCD_LISTEN_CLIENT_URLS
+#Peer消息的监听服务地址列表
+--env ETCD_LISTEN_PEER_URLS
+#启动集群的时候指定集群口令，只有相同token的才能加入到同一集群
+--env ETCD_INITIAL_CLUSTER_TOKEN
+#所有集群节点的地址列表
+--env ETCD_INITIAL_CLUSTER
+
 --------------------------------------------------------------------141  142  148 三个节点-------------------------------------------------------
 --------------------------------------------------------------------etcd1.yml--------------------------------------------------------------------
 version: "3.8"
