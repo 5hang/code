@@ -26,6 +26,7 @@ services:
       - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
       - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
       - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+      - ETCD_ENABLE_V2=true
     volumes:
       - ./data:/bitnami/etcd
 networks:
@@ -52,6 +53,7 @@ services:
       - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
       - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
       - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+      - ETCD_ENABLE_V2=true
     volumes:
       - ./data:/bitnami/etcd
 networks:
@@ -78,6 +80,7 @@ services:
       - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster #etcd 集群的初始化集群记号
       - ETCD_INITIAL_CLUSTER=etcd1=http://192.168.13.148:2380,etcd2=http://192.168.13.141:2380,etcd3=http://192.168.13.142:2380 #集群成员
       - ETCD_INITIAL_CLUSTER_STATE=new #初始化集群状态
+      - ETCD_ENABLE_V2=true
     volumes:
       - ./data:/bitnami/etcd
 networks:
