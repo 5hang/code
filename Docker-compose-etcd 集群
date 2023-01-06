@@ -120,3 +120,56 @@ I have no name!@788dd01aaa79:/opt/bitnami/etcd$ etcdctl put name "liubei"
 I have no name!@555187fb758c:/opt/bitnami/etcd$ etcdctl get name
 
 
+镜像默认只支持 etcd V3  如果需要支持v2  就要做
+解决办法：
+默认v2版接口关闭，只需要把set改成put即可。
+etcd开启v2版接口：在etcd的启动参数后面加上--enable-v2启动，或者在etcd的配置文件上加入ETCD_ENABLE_V2=true，
+然后重启etcd。使用etcdctl命令的时候前面加上ETCDCTL_API=2 ，调用v2接口。比如：ETCDCTL_API=2 etcdctl
+
+ETCDCTL_API=2 etcdctl ls /
+
+
+***********************************************基于ETCD集群  搭建overlay 跨节点通信网络*********************************************************************************************************
+ vim /etc/docker/daemon.json 
+----------------所有节点---------------------------
+"cluster-store" : "etcd://192.168.13.141:2379",
+"cluster-advertise" : "192.168.13.141:2376"
+-------------------------------------------
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+ 
+# ETCDCTL_API=2 etcdctl ls /   #验证配置成功了没
+/docker
+
+#在其中一个节点创建网络  其他节点都可以看到的奥
+docker network create --driver overlay   etcdnet
+8b1709a421eaff655ccf3c37c96fb041aece13ae2f6560cd8b4bc341b0cbbd46
+[root@148 etcds]# docker network ls
+NETWORK ID     NAME               DRIVER    SCOPE
+c1671803c92e   bridge             bridge    local
+8b1709a421ea   etcdnet            overlay   global
+1a5f8897696d   etcds_helloworld   bridge    local
+e8d8d0580bfd   host               host      local
+4f3532919680   none               null      local
+
+
+root@142 etcds]# docker network ls
+NETWORK ID     NAME               DRIVER    SCOPE
+a1b7825fe505   bridge             bridge    local
+8b1709a421ea   etcdnet            overlay   global
+6593e9f798dc   etcds_helloworld   bridge    local
+2e200ca816f6   host               host      local
+c5bec8b4050a   none               null      local
+
+
+基于网络创建节点
+docker run -it -d  --network etcdnet --name c1  centos:7.9.2009
+docker run -it -d  --network etcdnet --name c2  centos:7.9.2009
+docker run -it -d  --network etcdnet --name c3  centos:7.9.2009
+
+
+进入节点内部  即可 ping  c1 c2 c3 了
+
+
+
