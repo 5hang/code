@@ -23,6 +23,28 @@ volumes:  ./data 一定要赋予 777 权限奥
 --env ETCD_INITIAL_CLUSTER_TOKEN
 #所有集群节点的地址列表
 --env ETCD_INITIAL_CLUSTER
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+etcd  使用 cfssl 证书
+下载 二进制包  make && make install  
+cd bin/
+
+# 默认的属性
+cfssl print-defaults config > config.json
+cfssl print-defaults csr > csr.json
+
+
+[root@148 etcd]# cfssl gencert  -initca csr.json | cfssljson -bare ca -
+ 
+[root@148 etcd]# ls
+ca.csr  ca-key.pem  ca.pem  config.json  csr.json
+[root@148 etcd]# cfssl gencert  -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=www csr.json | cfssljson -bare server
+ 
+[root@148 etcd]# ls
+ca.csr  ca-key.pem  ca.pem  config.json  csr.json  server.csr  server-key.pem  server.pem
+ 
+
+
 
 --------------------------------------------------------------------141  142  148 三个节点-------------------------------------------------------
 --------------------------------------------------------------------etcd1.yml--------------------------------------------------------------------
