@@ -90,6 +90,9 @@ docker pull 镜像名字ID：TAG
 docker pull redis:6.2
 docker system df 查看镜像容器占用空间
 
+#查看镜像的 dockerfile 构成
+docker history --format {{.CreatedBy}} --no-trunc=true bitnami/etcd:3.5.0
+
 docker rmi -f $(docker images -qa)
 
 sudo docker rm $(sudo docker ps -a -q)
