@@ -1,8 +1,10 @@
+
+******************************************************etcd + ssl证书 （所有配置和调用的地方要用https 奥）************************************************ 
 1.0                 cfssl 创建证书
 
 mkdir -p /opt/cfssl/
 cd /opt/cfssl/
--------------------vim ca-config.json---------------------------
+----------------------------  vim ca-config.json  ---------------------------
 {
     "signing": {
         "default": {
@@ -21,7 +23,7 @@ cd /opt/cfssl/
         }
     }
 }
--------------------vim ca-csr.json---------------------------
+---------------------------- vim ca-csr.json ------------------------------
 {
     "CN": "etcd CA",
     "key": {
@@ -36,7 +38,7 @@ cd /opt/cfssl/
         }
     ]
 }
----------------------------vim server-csr.json------------------------
+--------------------------- vim server-csr.json --- --【需要修改成自己的ip】------------
 {
     "CN": "etcd",
     "key": {
@@ -44,9 +46,9 @@ cd /opt/cfssl/
         "size": 2048
     },
     "hosts": [
-    "192.168.1.221",
-    "192.168.1.222",
-    "192.168.1.223"
+    "192.168.13.148",
+    "192.168.13.141",
+    "192.168.13.142"
     ],
     "names": [
         {
@@ -56,6 +58,7 @@ cd /opt/cfssl/
         }
     ]
 }
+
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd server-csr.json | cfssljson -bare server
 ls
@@ -177,7 +180,7 @@ ETCD_PEER_AUTO_TLS="true"
 
 
 
--------------------------------同意修改启动文件  vi /lib/systemd/system/etcd.service   ----------------------------
+-------------------------------同意修改启动文件  vi /lib/systemd/system/etcd.service   ------------ 
 [Unit]
 Description=Etcd Server
 After=network.target
@@ -199,7 +202,7 @@ LimitNOFILE=65536
  
 [Install]
 WantedBy=multi-user.target
------------------------------------------------------------
+---------------------------------------------------------------------------------------------------- 
 
 #全部执行
 rm -rf /var/lib/etcd/* 
@@ -208,6 +211,22 @@ systemctl daemon-reload && systemctl enable etcd && systemctl start etcd && syst
 
 ETCDCTL_API=2 ./etcdctl --ca-file=/opt/cfssl/ca.pem  --cert-file=/opt/cfssl/server.pem --key-file=/opt/cfssl/server-key.pem --endpoints="https://192.168.13.148:2379,https://192.168.13.141:2379,https://192.168.13.142:2379" cluster-health
 
+[root@148 bin]# ETCDCTL_API=2 ./etcdctl --ca-file=/opt/cfssl/ca.pem  --cert-file=/opt/cfssl/server.pem --key-file=/opt/cfssl/server-key.pem --endpoints="https://192.168.13.148:2379,https://192.168.13.141:2379,https://192.168.13.142:2379" cluster-health
+member 31050b4572314124 is healthy: got healthy result from https://192.168.13.141:2379
+member 44fc1bd8471eabea is healthy: got healthy result from https://192.168.13.148:2379
+member f5f039265354b7b1 is healthy: got healthy result from https://192.168.13.142:2379
+cluster is healthy
+[root@148 bin]# ETCDCTL_API=2 .etcdctl  --endpoints="https://192.168.13.148:2379,https://192.168.13.141:2379,https://192.168.13.142:2379" cluster-healthbash: .etcdctl: 未找到命令...
+相似命令是： 'etcdctl'
+[root@148 bin]# ETCDCTL_API=2 ./etcdctl  --endpoints="https://192.168.13.148:2379,https://192.168.13.141:2379,https://192.168.13.142:2379" cluster-health
+cluster may be unhealthy: failed to list members
+Error:  client: etcd cluster is unavailable or misconfigured; error #0: x509: certificate signed by unknown authority
+; error #1: x509: certificate signed by unknown authority
+; error #2: x509: certificate signed by unknown authority
+
+error #0: x509: certificate signed by unknown authority
+error #1: x509: certificate signed by unknown authority
+error #2: x509: certificate signed by unknown authority
 
 
 
