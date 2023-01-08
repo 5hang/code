@@ -1,0 +1,219 @@
+1.0                 cfssl 创建证书
+
+mkdir -p /opt/cfssl/
+cd /opt/cfssl/
+-------------------vim ca-config.json---------------------------
+{
+    "signing": {
+        "default": {
+            "expiry": "87600h"
+        },
+        "profiles": {
+            "etcd": {
+                "expiry": "87600h",
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "server auth",
+                    "client auth"
+                ]
+            }
+        }
+    }
+}
+-------------------vim ca-csr.json---------------------------
+{
+    "CN": "etcd CA",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "L": "shanghai",
+            "ST": "shanghai"
+        }
+    ]
+}
+---------------------------vim server-csr.json------------------------
+{
+    "CN": "etcd",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "hosts": [
+    "192.168.1.221",
+    "192.168.1.222",
+    "192.168.1.223"
+    ],
+    "names": [
+        {
+            "C": "CN",
+            "L": "shanghai",
+            "ST": "shanghai"
+        }
+    ]
+}
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd server-csr.json | cfssljson -bare server
+ls
+ca-config.json  ca-csr.json  ca-key.pem  ca.csr  ca.pem  server-csr.json  server-key.pem  server.csr  server.pem
+复制证书到另外两台主机
+
+
+2.0 安装 etcd
+yum -y install etcd 
+
+vi /etc/etcd/etcd.conf
+
+------------------------------------------148 --------------------------------------------------
+#[Member]
+#1.节点名称，必须唯一
+ETCD_NAME="etcd01"
+#2.设置数据保存的目录
+ETCD_DATA_DIR="/var/lib/etcd"
+#3.本节点机器用于监听其他节点的url，url是本机上的2380
+ETCD_LISTEN_PEER_URLS="https://192.168.13.148:2380"
+#4.建议本节点用于和其他节点之间通信的url，且会通告集群的其余成员节点
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://192.168.13.148:2380"
+#5.本节点机器用于和客户端通信的url，url是本机上的 2379
+ETCD_LISTEN_CLIENT_URLS="https://192.168.13.148:2379,https://127.0.0.1:2379"
+#[Clustering]
+#6.建议本节点和客户端通信使用的url
+ETCD_ADVERTISE_CLIENT_URLS="https://192.168.13.148:2379"
+#7.集群中所有节点的信息
+ETCD_INITIAL_CLUSTER="etcd01=https://192.168.13.148:2380,etcd02=https://192.168.13.141:2380,etcd03=https://192.168.13.142:2380"
+#8.创建集群的token，这个值每个集群均相同
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
+#9.初始集群状态，新建集群的时候，这个值为new,后续再启动时需要将“new”更改为“existing”
+ETCD_INITIAL_CLUSTER_STATE="new"
+#10.flannel操作etcd使用的是v2的API，而kubernetes操作etcd使用的v3的API
+#   为了兼容flannel，将默认开启v2版本，故配置文件中设置 
+ETCD_ENABLE_V2="true"
+# [Security]
+ETCD_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_PEER_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_PEER_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_PEER_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_CLIENT_CERT_AUTH="true"
+ETCD_AUTO_TLS="true"
+ETCD_PEER_CLIENT_CERT_AUTH="true"
+ETCD_PEER_AUTO_TLS="true"
+------------------------------------------141 --------------------------------------------------
+#[Member]
+#1.节点名称，必须唯一
+ETCD_NAME="etcd02"
+#2.设置数据保存的目录
+ETCD_DATA_DIR="/var/lib/etcd"
+#3.本节点机器用于监听其他节点的url，url是本机上的2380
+ETCD_LISTEN_PEER_URLS="https://192.168.13.141:2380"
+#4.建议本节点用于和其他节点之间通信的url，且会通告集群的其余成员节点
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://192.168.13.141:2380"
+#5.本节点机器用于和客户端通信的url，url是本机上的 2379
+ETCD_LISTEN_CLIENT_URLS="https://192.168.13.141:2379,https://127.0.0.1:2379"
+#[Clustering]
+#6.建议本节点和客户端通信使用的url
+ETCD_ADVERTISE_CLIENT_URLS="https://192.168.13.141:2379"
+#7.集群中所有节点的信息
+ETCD_INITIAL_CLUSTER="etcd01=https://192.168.13.148:2380,etcd02=https://192.168.13.141:2380,etcd03=https://192.168.13.142:2380"
+#8.创建集群的token，这个值每个集群均相同
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
+#9.初始集群状态，新建集群的时候，这个值为new,后续再启动时需要将“new”更改为“existing”
+ETCD_INITIAL_CLUSTER_STATE="new"
+#10.flannel操作etcd使用的是v2的API，而kubernetes操作etcd使用的v3的API
+#   为了兼容flannel，将默认开启v2版本，故配置文件中设置 
+ETCD_ENABLE_V2="true"
+# [Security]
+ETCD_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_PEER_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_PEER_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_PEER_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_CLIENT_CERT_AUTH="true"
+ETCD_AUTO_TLS="true"
+ETCD_PEER_CLIENT_CERT_AUTH="true"
+ETCD_PEER_AUTO_TLS="true"
+------------------------------------------142 --------------------------------------------------
+#[Member]
+#1.节点名称，必须唯一
+ETCD_NAME="etcd03"
+#2.设置数据保存的目录
+ETCD_DATA_DIR="/var/lib/etcd"
+#3.本节点机器用于监听其他节点的url，url是本机上的2380
+ETCD_LISTEN_PEER_URLS="https://192.168.13.142:2380"
+#4.建议本节点用于和其他节点之间通信的url，且会通告集群的其余成员节点
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://192.168.13.142:2380"
+#5.本节点机器用于和客户端通信的url，url是本机上的 2379
+ETCD_LISTEN_CLIENT_URLS="https://192.168.13.142:2379,https://127.0.0.1:2379"
+#[Clustering]
+#6.建议本节点和客户端通信使用的url
+ETCD_ADVERTISE_CLIENT_URLS="https://192.168.13.142:2379"
+#7.集群中所有节点的信息
+ETCD_INITIAL_CLUSTER="etcd01=https://192.168.13.148:2380,etcd02=https://192.168.13.141:2380,etcd03=https://192.168.13.142:2380"
+#8.创建集群的token，这个值每个集群均相同
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
+#9.初始集群状态，新建集群的时候，这个值为new,后续再启动时需要将“new”更改为“existing”
+ETCD_INITIAL_CLUSTER_STATE="new"
+#10.flannel操作etcd使用的是v2的API，而kubernetes操作etcd使用的v3的API
+#   为了兼容flannel，将默认开启v2版本，故配置文件中设置 
+ETCD_ENABLE_V2="true"
+# [Security]
+ETCD_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_PEER_TRUSTED_CA_FILE="/opt/cfssl/ca.pem"
+ETCD_PEER_CERT_FILE="/opt/cfssl/server.pem"
+ETCD_PEER_KEY_FILE="/opt/cfssl/server-key.pem"
+ETCD_CLIENT_CERT_AUTH="true"
+ETCD_AUTO_TLS="true"
+ETCD_PEER_CLIENT_CERT_AUTH="true"
+ETCD_PEER_AUTO_TLS="true"
+----------------------------------------------------------------------------------------------------
+
+
+
+-------------------------------同意修改启动文件  vi /lib/systemd/system/etcd.service   ----------------------------
+[Unit]
+Description=Etcd Server
+After=network.target
+Wants=network-online.target
+ 
+[Service]
+User=root
+Type=notify
+## 根据实际情况修改WorkingDirectory、EnvironmentFile、ExecStart这三个参数值
+## 1.WorkingDirectory：etcd数据存放的位置
+WorkingDirectory=/var/lib/etcd/
+## 2.EnvironmentFile即配置文件的位置，注意“-”不能少
+EnvironmentFile=-/etc/etcd/etcd.conf
+## 3.ExecStart即etcd启动程序位置
+ExecStart=/bin/etcd
+Restart=always
+RestartSec=10s
+LimitNOFILE=65536
+ 
+[Install]
+WantedBy=multi-user.target
+-----------------------------------------------------------
+
+#全部执行
+rm -rf /var/lib/etcd/* 
+
+systemctl daemon-reload && systemctl enable etcd && systemctl start etcd && systemctl status etcd
+
+ETCDCTL_API=2 ./etcdctl --ca-file=/opt/cfssl/ca.pem  --cert-file=/opt/cfssl/server.pem --key-file=/opt/cfssl/server-key.pem --endpoints="https://192.168.13.148:2379,https://192.168.13.141:2379,https://192.168.13.142:2379" cluster-health
+
+
+
+
+
+
+
+
+
+
