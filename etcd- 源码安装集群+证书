@@ -205,6 +205,8 @@ WantedBy=multi-user.target
 ---------------------------------------------------------------------------------------------------- 
 
 #全部执行
+chmod 700 /var/lib/etcd/ -R
+
 rm -rf /var/lib/etcd/* 
 
 systemctl daemon-reload && systemctl enable etcd && systemctl start etcd && systemctl status etcd
