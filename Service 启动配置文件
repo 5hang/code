@@ -17,6 +17,11 @@ processManagement:
  fork: true
 replication:
   replSetName: zhangsan
+  
+***********************************************************************************************
+参考： 
+https://blog.51cto.com/tchuairen/2353692
+https://blog.51cto.com/tchuairen/2353692
 --------------------------vim   /lib/systemd/system/mongod.service----------------------------  
 [Unit]
 Description=Mongodb Service
