@@ -1,0 +1,38 @@
+mkdir -p /data/mongodb/data
+
+---------------------mongo.conf-------------------
+systemLog:
+ destination: file
+ path: /data/mongodb/mongod.log
+ logAppend: true
+storage:
+ dbPath: /data/mongodb/data
+ engine: wiredTiger
+ journal:
+  enabled: true
+net:
+ bindIp: 0.0.0.0
+ port: 27017
+processManagement:
+ fork: true
+replication:
+  replSetName: zhangsan
+--------------------------vim   /lib/systemd/system/mongod.service----------------------------  
+[Unit]
+Description=Mongodb Service
+After=network.target remote-fs.target nss-lookup.target
+[Service]
+Type=forking
+ExecStart=/usr/local/mongodb/bin/mongod --config /data/mongodb/mongo.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/usr/local/mongodb/bin/mongod --config /data/mongodb/mongo.conf --shutdown
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
+--------------------------------------------------------------------------------------------  
+systemctl daemon-reload
+systemctl enable mongod
+systemctl start mongod
+systemctl status mongodb
+
+
