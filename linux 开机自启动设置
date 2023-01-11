@@ -1,8 +1,0 @@
-
-方法1：   chmod a+x /etc/rc.d/rc.local   增加这个文件的执行权限，并将需要添加启动软件的命令 增加一行即可
-
-
-sudo /usr/local/mongodb/bin/mongod  -f  /usr/local/mongodb/bin/mongo.conf    ##这里需要是绝对的路径奥
-
-sudo /usr/local/bin/redis-server &                                           
- 
