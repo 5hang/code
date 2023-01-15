@@ -49,6 +49,8 @@ Starting zookeeper ... FAILED TO START
 
 解压后移动文件到 /usr/local/kafka3.3.1
  
+#  kafka 目录   如果后台启动的话  日志就在logs 下了奥
+bin  config  data  libs  LICENSE  licenses  logs  NOTICE  site-docs
 ----------------------------------Kafka 3.3.1 配置  (server.properties) ----------------------------------
 #保证唯一
 broker.id=0
@@ -58,7 +60,7 @@ socket.send.buffer.bytes=102400
 socket.receive.buffer.bytes=102400
 socket.request.max.bytes=104857600
 #配置日志存放文件夹路径
-log.dirs=/usr/local/kafka3.3.1/kafka-logs
+log.dirs=/usr/local/kafka3.3.1/data
 num.partitions=1
 num.recovery.threads.per.data.dir=1
 offsets.topic.replication.factor=1
@@ -110,6 +112,8 @@ log.dirs=/usr/local/kafka3.3.1/kafka-logs
 #listeners=PLAINTEXT://localhost:9092 # 查看和创建主题时候   这里配置localhost  查看就用  --bootstrap-server localhost:9092                                                       
 #listeners=PLAINTEXT://192.68.13.148:9092                     这里配置的是IP    查看就用  --bootstrap-server 192.68.13.148:9092  
 # 否则出错的奥 WARN [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+
+
 
 
 
