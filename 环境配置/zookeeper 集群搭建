@@ -34,6 +34,14 @@ echo 3 > data/myid
 [root@zookeeper1 bin]# ./zkServer.sh status   //查看当前zookeeper的状态
 
 
+[root@142 bin]# ./zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /data/zookeeper/apache-zookeeper-3.6.3-bin/bin/../conf/zoo.cfg
+Client port found: 2181. Client address: localhost. Client SSL: false.
+Mode: leader    / follow      ！！！！！！！！！！！！！！ 这里会出现是leader 还是 follow的奥      
+
+
+
 # 测试  
 148：  cerate /aaa 123
 141:   get    /aaa
