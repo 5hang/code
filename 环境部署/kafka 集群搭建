@@ -16,6 +16,16 @@ cd kafka
 mkdir data
  
 Kafka配置  (server.properties)
+
+
+###############
+acks = all/-1 : 表示kafka isr列表中所有的副本同步数据成功，才返回消息给客户端
+acks = 0 ：表示客户端只管发送数据，不管服务端接收数据的任何情况
+acks = 1 ：表示客户端发送数据后，需要在服务端 leader 副本写入数据成功后，返回响应
+min.insync.replicas  描述：Kafka ISR 列表中最小同步副本数
+默认 min.insync.replicas = 1
+当 acks = all/-1 时，建议 min.insync.replicas 的值大于1 且小于 replication.factor 副本数
+建议 min.insync.replicas = 2 #当 acks = -1/all 时 
 ----------------------------------  192.168.13.148----------------------------------
 #保证唯一
 broker.id=0                                                                    #集群中的唯一标志  0 1 2 3 4 5 
