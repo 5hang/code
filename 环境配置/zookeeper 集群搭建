@@ -1,0 +1,34 @@
+
+--------------------------------------------------apache-zookeeper-3.6.3 -----------------------------------------
+
+192.168.13.148  node8
+192.168.13.141  node1
+192.168.13.142  node2
+
+mkdir -p /data/zookeeper
+mkdir -p /data/zookeeper/data
+
+
+-----------------三个节点三份奥-----zoo.cfg------------------------
+tickTime=2000
+initLimit=10
+syncLimit=5
+#dataDir这个目录可以存Myid，并且也能存储默认的事务日志，还可以存Version
+dataDir=/data/zookeeper/data         
+#clientPort这是客户端连接服务器的端口，默认是2181
+clientPort=2181  
+
+server.1=192.168.13.148:2888:3888
+server.2=192.168.13.141:2888:3888
+server.3=192.168.13.142:2888:3888
+----------------------------------------------------------------------
+
+三个节点 需要在 日志文件下 写入三个zk的 myid
+
+echo 1 > data/myid
+echo 2 > data/myid
+echo 3 > data/myid
+     
+     
+[root@zookeeper1 bin]# ./zkServer.sh start    //启动zookeeper服务器
+[root@zookeeper1 bin]# ./zkServer.sh status   //查看当前zookeeper的状态
