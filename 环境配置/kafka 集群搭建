@@ -1,0 +1,105 @@
+192.168.13.148  node8
+192.168.13.141  node1
+192.168.13.142  node2
+
+
+mkdir -p /data/kafka
+cd /data/kafka
+
+tar -zxvf kafka_2.13-2.6.0.tgz
+mv kafka_2.13-2.6.0 kafka
+
+cd kafka 
+mkdir data
+ 
+Kafka   配置  (server.properties)
+----------------------------------  192.168.13.148----------------------------------
+#保证唯一
+broker.id=0
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+#配置日志存放文件夹路径
+log.dirs=/data/kafka/kafka/data
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.check.interval.ms=300000
+#zookeeper的地址和端口号
+zookeeper.connect=node1:2181,node2:2181,node8:2181
+zookeeper.connection.timeout.ms=18000
+group.initial.rebalance.delay.ms=0
+
+# 这个 不配就是 localhost  那么本机连接他就用localhost 即可，
+# 如果这个配置改成了 PLAINTEXT://IP:9092  那么本机连接他就要用 IP:9092了
+listeners=PLAINTEXT://node8:9092
+----------------------------------  192.168.13.141----------------------------------
+#保证唯一
+broker.id=2
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+#配置日志存放文件夹路径
+log.dirs=/data/kafka/kafka/data
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.check.interval.ms=300000
+#zookeeper的地址和端口号
+zookeeper.connect=node1:2181,node2:2181,node8:2181
+zookeeper.connection.timeout.ms=18000
+group.initial.rebalance.delay.ms=0
+
+# 这个 不配就是 localhost  那么本机连接他就用localhost 即可，
+# 如果这个配置改成了 PLAINTEXT://IP:9092  那么本机连接他就要用 IP:9092了
+listeners=PLAINTEXT://node1:9092
+----------------------------------  192.168.13.148----------------------------------
+#保证唯一
+broker.id=3
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+#配置日志存放文件夹路径
+log.dirs=/data/kafka/kafka/data
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+log.retention.hours=168
+log.retention.check.interval.ms=300000
+#zookeeper的地址和端口号
+zookeeper.connect=node1:2181,node2:2181,node8:2181
+zookeeper.connection.timeout.ms=18000
+group.initial.rebalance.delay.ms=0
+
+# 这个 不配就是 localhost  那么本机连接他就用localhost 即可，
+# 如果这个配置改成了 PLAINTEXT://IP:9092  那么本机连接他就要用 IP:9092了
+listeners=PLAINTEXT://node3:9092
+---------------------------------------------------------------------------------------------
+
+ ./kafka-server-start.sh -daemon ../config/server.properties
+
+
+./kafka-topics.sh --create --bootstrap-server node8:9092 --replication-factor 3 --partitions 1 --topic test
+./kafka-topics.sh --create --bootstrap-server 192.168.13.148:9092 --replication-factor 3 --partitions 5 --topic haha
+
+
+./kafka-topics.sh --list  --bootstrap-server node1:9092
+./kafka-topics.sh --list  --bootstrap-server 192.168.13.148:9092
+
+
+
+
