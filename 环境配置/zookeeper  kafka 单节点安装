@@ -1,0 +1,37 @@
+
+Kafka zookeeper 的对应关系
+https://blog.csdn.net/Saintmm/article/details/124073256
+下载kafka 源码包   找到dependencies.gradle   zookeeper: "3.6.3",  里面有zookeeper的版本信息
+
+
+------------------------------------------------------------------------------------------------------------
+apache-zookeeper-3.6.3.bin.tar.gz                     #zookeeper 3.5  +  要下载带bin后缀的奥
+mv zookeeper3.6.3/  /usr/local/
+cd /usr/local/zookeeper3.6.3/conf/
+mv zoo_sample.cfg zoo.cfg                             #启动zookeeper 默认回去找zk/conf/zoo.cfg
+cd ..  mkdir data                                     #新建zookeeper数据存放目录
+
+                                                      #修改zookeeper的数据存放目录vi zoo.cfg
+-----------------------conf/zoo.cfg--------------------------------------------------------------------------                                                 
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/usr/local/zookeeper3.6.3/data
+clientPort=2181
+--------------------------------------------------------------------------------------------------------------
+启动zookeeper
+
+./zkServer.sh start                                     #这种启动方式默认就会自动调用 ../conf/zoo.cfg 的奥 不需要额外指定配置文件的呢
+--------------------------------------------------------------------
+/usr/bin/java
+ZooKeeper JMX enabled by default
+Using config: /usr/local/zookeeper3.6.3/bin/../conf/zoo.cfg
+Starting zookeeper ... FAILED TO START
+--------------------------------------------------------------------
+./zkServer.sh start-foreground
+停止
+./zkServer.sh stop
+
+连接登录zookeeper
+./zkCli.sh
+
