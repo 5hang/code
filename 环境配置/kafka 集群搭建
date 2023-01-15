@@ -1,8 +1,10 @@
+
+配置集群的 域名先
 192.168.13.148  node8
 192.168.13.141  node1
 192.168.13.142  node2
 
-
+# 在每个几点创建工作的目录先 /data/kafka/kafka/bin         /data/kafka/kafka/data
 mkdir -p /data/kafka
 cd /data/kafka
 
@@ -10,9 +12,10 @@ tar -zxvf kafka_2.13-2.6.0.tgz
 mv kafka_2.13-2.6.0 kafka
 
 cd kafka 
+
 mkdir data
  
-Kafka   配置  (server.properties)
+Kafka配置  (server.properties)
 ----------------------------------  192.168.13.148----------------------------------
 #保证唯一
 broker.id=0
@@ -90,7 +93,9 @@ group.initial.rebalance.delay.ms=0
 listeners=PLAINTEXT://node3:9092
 ---------------------------------------------------------------------------------------------
 
- ./kafka-server-start.sh -daemon ../config/server.properties
+cd /kafka/bin
+
+./kafka-server-start.sh -daemon ../config/server.properties
 
 
 ./kafka-topics.sh --create --bootstrap-server node8:9092 --replication-factor 3 --partitions 1 --topic test
@@ -100,6 +105,10 @@ listeners=PLAINTEXT://node3:9092
 ./kafka-topics.sh --list  --bootstrap-server node1:9092
 ./kafka-topics.sh --list  --bootstrap-server 192.168.13.148:9092
 
+
+./kafka-console-producer.sh --broker-list node8:9092 --topic test                        #发消息
+
+./kafka-console-consumer.sh --bootstrap-server node8:9092 --topic test --from-beginning  #接受消息
 
 
 
