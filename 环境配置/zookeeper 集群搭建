@@ -32,3 +32,19 @@ echo 3 > data/myid
      
 [root@zookeeper1 bin]# ./zkServer.sh start    //启动zookeeper服务器
 [root@zookeeper1 bin]# ./zkServer.sh status   //查看当前zookeeper的状态
+
+
+# 测试  
+148：  cerate /aaa 123
+141:   get    /aaa
+
+
+
+
+
+
+
+
+
+
+
