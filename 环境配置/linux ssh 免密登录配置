@@ -1,0 +1,10 @@
+免密登录命令：
+1.进入.ssh目录：  
+
+ cd /root/.ssh/ 
+
+2.生成一对密钥：    ssh-keygen -t rsa
+
+3.发送公钥：        ssh-copy-id 192.168.xx.xxx
+
+4.免密登录测试：    ssh 192.168.xx.xxx
