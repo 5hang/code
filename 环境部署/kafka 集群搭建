@@ -18,15 +18,15 @@ mkdir data
 Kafka配置  (server.properties)
 ----------------------------------  192.168.13.148----------------------------------
 #保证唯一
-broker.id=0
-num.network.threads=3
-num.io.threads=8
+broker.id=0                                                                    #集群中的唯一标志  0 1 2 3 4 5 
+num.network.threads=8                                                          # 生产环境 8 
+num.io.threads=16                                                              # 生产环境 16
 socket.send.buffer.bytes=102400
 socket.receive.buffer.bytes=102400
 socket.request.max.bytes=104857600
 #配置日志存放文件夹路径
-log.dirs=/data/kafka/kafka/data
-num.partitions=1
+log.dirs=/data/kafka/kafka/data                                                #生产环境如果有多个磁盘  log.dirs=/data1,/data2,data3
+num.partitions=1                                                               # 无所谓，用的时候手动指定
 num.recovery.threads.per.data.dir=1
 offsets.topic.replication.factor=1
 transaction.state.log.replication.factor=1
@@ -34,13 +34,17 @@ transaction.state.log.min.isr=1
 log.retention.hours=168
 log.retention.check.interval.ms=300000
 #zookeeper的地址和端口号
-zookeeper.connect=node1:2181,node2:2181,node8:2181
+zookeeper.connect=node1:2181,node2:2181,node8:2181                              #
 zookeeper.connection.timeout.ms=18000
 group.initial.rebalance.delay.ms=0
 
+log.retention.hours=72                                                          # 一个日志的最小存活时间，可以被删除(生产没必要保存那么久的)
+#log.flush.interval.messages=10000                                              # 请求10000次，就刷盘            
+#log.flush.interval.ms=1000                                                     # 1s 刷盘
+
 # 这个 不配就是 localhost  那么本机连接他就用localhost 即可，
 # 如果这个配置改成了 PLAINTEXT://IP:9092  那么本机连接他就要用 IP:9092了
-listeners=PLAINTEXT://node8:9092
+listeners=PLAINTEXT://node8:9092                                               #客户端通过这个生产消费的
 ----------------------------------  192.168.13.141----------------------------------
 #保证唯一
 broker.id=2
