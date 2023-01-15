@@ -77,8 +77,12 @@ group.initial.rebalance.delay.ms=0
 ----------------------------------------------
 
 #如果启动失败了 需要删除 log.dirs 之前存在的数据目录的奥
+
+#后台启动kafka
 ./kafka-server-start.sh -daemon ../config/server.properties--------
 
+#停止kafka
+./kafka-server-stop.sh
 
 
 ./kafka-topics.sh --bootstrap-server 192.168.13.148:9092 --create --replication-factor 1 --partitions 1 --topic data-time
@@ -93,6 +97,7 @@ group.initial.rebalance.delay.ms=0
 ./kafka-topics.sh --create --zookeeper localhost:2181        --replication-factor 1 --partitions 1 --topic test
 #新版本创建kafka -- 主题
 ./kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic hello
+
 #查看 -- 主题 (查看注意的方式 通过localhost   ，   ip  ) 根据 配置中listeners：这个字段的配置决定的奥
 ./kafka-topics.sh --list  --bootstrap-server localhost:9092
 ./kafka-topics.sh --list  --bootstrap-server 192.168.13.148:9092
@@ -100,8 +105,11 @@ group.initial.rebalance.delay.ms=0
 #如果kafka 启动失败 ，  删除data目录下的meta.properties文件，重启kafka
 log.dirs=/usr/local/kafka3.3.1/kafka-logs
 
-; zookeeper.connect=192.168.13.148:2181   创建主题和查看主题  的链接方式要和这个一样的奥
 
+
+#listeners=PLAINTEXT://localhost:9092 # 查看和创建主题时候   这里配置localhost  查看就用  --bootstrap-server localhost:9092                                                       
+#listeners=PLAINTEXT://192.68.13.148:9092                     这里配置的是IP    查看就用  --bootstrap-server 192.68.13.148:9092  
+# 否则出错的奥 WARN [AdminClient clientId=adminclient-1] Connection to node -1 (localhost/127.0.0.1:9092) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
 
 
 
