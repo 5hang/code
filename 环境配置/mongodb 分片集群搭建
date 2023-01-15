@@ -1,0 +1,272 @@
+https://www.mongodb.com/try/download/community
+
+二进制包  不用编译
+
+mv ./mon..  /usr/local/mongo
+
+systemLog:
+ destination: file
+ path: /data/mongodb/mongod.log
+ logAppend: true
+storage:
+ dbPath: /data/mongodb/data
+ engine: wiredTiger
+ journal:
+  enabled: true
+net:
+ bindIp: 0.0.0.0
+ port: 27017
+processManagement:
+ fork: true
+
+
+ vim /etc/profile
+export MONGODB_HOME=/usr/local/mongodb
+PATH=$PATH:$MONGODB_HOME/bin
+source /etc/profile
+
+
+ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 33813
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 100000
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 65536
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+
+ 修改/etc/security/limits.conf文件，在文件中添加如下行：重启后生效
+*   soft nofile 100000
+*   hard nofile 100000
+*   soft nproc 131072
+*   hard nproc 131072
+
+ 
+cat /sys/kernel/mm/transparent_hugepage/enabled
+always madvise [never]
+
+
+echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
+echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
+
+----------------------------------------------------------------
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local
+
+
+echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
+echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag
+----------------------------------------------------------------
+
+
+ chmod +x /etc/rc.d/rc.local
+
+for(i=1;i<=500000;i++){ 
+db.user.insert({ name:'mytest'+i,age:i })
+}
+
+db.user.count()
+
+
+
+mongodb 副本集群
+
+systemLog:
+ destination: file
+ path: /data/mongodb/mongod.log
+ logAppend: true
+storage:
+ dbPath: /data/mongodb/data
+ engine: wiredTiger
+ journal:
+  enabled: true
+net:
+ bindIp: 0.0.0.0
+ port: 27017
+processManagement:
+ fork: true
+replication:
+  replSetName: zhangsan
+
+
+# 在一个节点上进入Mongo设置
+
+ rs.config()
+
+
+----------------------------------------
+config={_id:"zhangsan",members:[
+  {_id:0, host:"192.168.13.148:27017"},
+  {_id:1, host:"192.168.13.141:27017"},
+  {_id:2, host:"192.168.13.142:27017"}]}
+
+use admin;
+rs.initiate(config)
+rs.status();
+----------------------------------------
+
+#SECONDARY 需要声明是slave 才能查看数据的
+----------------------------------------
+zhangsan:SECONDARY> rs.slaveOk();
+                    rs.secondaryOk();
+
+----------------------------------------
+
+#查看延时效果
+zhangsan:PRIMARY> rs.printSecondaryReplicationInfo();
+
+
+当主节点 挂了 second 会自动变成主节点了
+重启主节点   设置rs.slaveOk() 即可了
+
+mongodb：副本集 扩充和删除
+
+use admin
+rs.add("192.168.13.xx:27017")  #只需要一条命令就能将一个新的mong加入进来 数据自动同步的
+
+use admin
+rs.remove("192.168.13.xx:27017")  #privary 不能remove
+
+
+
+mongodump 
+#副本集的话 只能在primary中  备份的奥
+
+mongorestore
+
+
+[root@141 data]# mongodump -h 127.0.0.1:27017 -o ./
+2023-01-12T01:59:25.306+0800    writing admin.system.version to admin/system.version.bson
+2023-01-12T01:59:25.306+0800    done dumping admin.system.version (1 document)
+2023-01-12T01:59:25.307+0800    writing test.user to test/user.bson
+2023-01-12T01:59:25.307+0800    writing config.image_collection to config/image_collection.bson
+2023-01-12T01:59:25.308+0800    done dumping test.user (1 document)
+2023-01-12T01:59:25.308+0800    done dumping config.image_collection (0 documents)
+[root@141 data]# ls
+admin  config  dump  mongodb  test  wangzunbin
+[root@141 data]# mongorestore -h 127.0.0.1:27017 ./
+2023-01-12T02:01:01.460+0800    preparing collections to restore from
+2023-01-12T02:01:01.460+0800    don't know what to do with subdirectory "mongodb/data", skipping...
+2023-01-12T02:01:01.460+0800    don't know what to do with file "mongodb/mongo.conf", skipping...
+2023-01-12T02:01:01.460+0800    don't know what to do with file "mongodb/mongod.log", skipping...
+2023-01-12T02:01:01.460+0800    don't know what to do with subdirectory "wangzunbin/volume", skipping...
+2023-01-12T02:01:01.460+0800    reading metadata for test.user from test/user.metadata.json
+2023-01-12T02:01:01.461+0800    restoring to existing collection config.image_collection without dropping
+2023-01-12T02:01:01.461+0800    reading metadata for config.image_collection from config/image_collection.metadata.json
+2023-01-12T02:01:01.461+0800    restoring config.image_collection from config/image_collection.bson
+2023-01-12T02:01:01.462+0800    no indexes to restore
+2023-01-12T02:01:01.462+0800    finished restoring config.image_collection (0 documents, 0 failures)
+2023-01-12T02:01:01.464+0800    restoring test.user from test/user.bson
+2023-01-12T02:01:01.470+0800    no indexes to restore
+2023-01-12T02:01:01.470+0800    finished restoring test.user (1 document, 0 failures)
+2023-01-12T02:01:01.470+0800    1 document(s) restored successfully. 0 document(s) failed to restore.
+
+
+
+mongo 单个文档不超过16M
+嵌套不超过 100 层级
+单个集合最多 64 个索引
+不允许创建 多个数组的组合索引
+尽量不免对数组创建索引的
+
+副本集最多包含 50个节点的
+
+分片集群：
+        分片key 最大长度不超过512 byte 
+
+  bulkwrite 操作每个最大曹祖限制10万
+  最佳实践：
+  1：通常每一批业务批量控制在  1-5k
+  2：默认bulkwrite 操作有序建议是 设置false 并发
+  3：为了避免批量操作导致 复制延迟可每一批适当sleep
+
+
+  writeConcern 
+  readConcern
+
+  oplog
+
+
+
+
+系统启动服务配置/视频教程
+
+ vim  /lib/systemd/system/mongod.service
+
+
+
+
+
+
+
+
+
+
+
+# ulimit  最大文件描述符设置
+
+cat /etc/security/limits.conf
+
+*  soft      nofile     1000000
+*  hard      nofile     1000000
+*  soft      nproc      65536
+*  hard      nproc      65536
+
+如果是通过  systemctl start mongod 启动的服务  需要 在
+[Service]
+LimitCORE=infinity
+LimitNOFILE=100000
+LimitNPROC=100000
+然后运行如下命令，才能生效。
+
+或者下面的全局配置才能生效的奥
+对于systemd service的资源限制，如何配置呢？
+全局的配置，放在文件 /etc/systemd/system.conf 和 /etc/systemd/user.conf。 同时，也会加载两个对应的目录中的所有.conf文件 /etc/systemd/system.conf.d/*.conf 和 /etc/systemd/user.conf.d/*.conf
+其中，system.conf 是系统实例使用的，user.conf用户实例使用的。一般的sevice，使用system.conf中的配置即可。systemd.conf.d/*.conf中配置会覆盖system.conf。
+DefaultLimitCORE=infinity
+DefaultLimitNOFILE=100000
+DefaultLimitNPROC=100000
+注意：修改了system.conf后，需要重启系统才会生效。
+
+
+
+
+Mongodb副本集读写分离
+ 一般情况下，常规写操作来说并没有读操作多，所以在Mongodb副本集中，一台主节点负责写操作，两台副本节点负责读操作。
+
+1）设置读写分离需要先在副本节点SECONDARY 设置 setSlaveOk。
+2）在程序中设置副本节点负责读操作
+读参数除了secondary一共还有五个参数：primary、primaryPreferred、secondary、secondaryPreferred、nearest。
+primary：默认参数，只从主节点上进行读取操作；
+primaryPreferred：大部分从主节点上读取数据,只有主节点不可用时从secondary节点读取数据。
+secondary：只从secondary节点上进行读取操作，存在的问题是secondary节点的数据会比primary节点数据“旧”。如果没有可用的从节点，读请求会抛出异常。
+secondaryPreferred：优先从secondary节点进行读取操作，secondary节点不可用时从主节点读取数据；
+nearest：不管是主节点、secondary节点，从网络延迟最低的节点上读取数据。
+
+读写分离做好后，就可以进行数据分流，减轻压力，解决了"主节点的读写压力过大如何解决？"这个问题。不过当副本节点增多时，主节点的复制压力会加大有什么办法解决吗？基于这个问题，Mongodb已有了相应的解决方案 - 引用仲裁节点：
+在Mongodb副本集中，仲裁节点不存储数据，只是负责故障转移的群体投票，这样就少了数据复制的压力。看起来想的很周到啊，其实不只是主节点、副本节点、仲裁节点，还有Secondary-Only、Hidden、Delayed、Non-Voting，其中：
+Secondary-Only：不能成为primary节点，只能作为secondary副本节点，防止一些性能不高的节点成为主节点。
+Hidden：这类节点是不能够被客户端制定IP引用，也不能被设置为主节点，但是可以投票，一般用于备份数据。
+Delayed：可以指定一个时间延迟从primary节点同步数据。主要用于备份数据，如果实时同步，误删除数据马上同步到从节点，恢复又恢复不了。
+Non-Voting：没有选举权的secondary节点，纯粹的备份数据节点。
