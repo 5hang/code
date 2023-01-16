@@ -92,6 +92,19 @@ group.initial.rebalance.delay.ms=0
 ./kafka-topics.sh --bootstrap-server localhost:9092     --create  --replication-factor 1 --partitions 1 --topic good
 
 
+# 搭建好了 kafka  需要做压力测试的奥 
+                                                         # 50万条数据  200字节/个数据
+./kafka-producer-perf-test.sh --topic test --num-records 500000 --record-size 200   --throughput -1  --producer-props bootstrap.servers=192.168.13.148:9092
+
+./kafka-consumer-perf-test.sh --broker-list 192.168.13.148:9092 --fetch-size 2000 --messages 500000 -topic test
+
+#                     13万/s 生产能力
+500000 records sent, 136911.281490 records/sec (26.11 MB/sec), 127.31 ms avg latency, 448.00 ms max latency, 86 ms 50th, 404 ms 95th, 428 ms 99th, 432 ms 99.9th.
+
+#                                                                                                               15万/s 消费能力
+start.time,              end.time,                data.consumed.in.MB, MB.sec,     data.consumed.in.nMsg,       nMsg.sec,      rebalance.time.ms, fetch.time.ms, fetch.MB.sec, fetch.nMsg.sec
+2023-01-16 13:09:09:561, 2023-01-16 13:09:12:803, 95.3674,             29.4162,    500000,                      154225.7866,   624,               2618,          36.4276,       190985.4851
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 新老版本kafka 连接 zookeeper 的方式不一样的奥  [--zookeeper localhost:2181]  [--bootstrap-server localhost:9092]
 
