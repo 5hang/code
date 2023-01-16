@@ -93,6 +93,10 @@ group.initial.rebalance.delay.ms=0
 
 
 # 搭建好了 kafka  需要做压力测试的奥 
+说明：
+record-size是一条信息有多大，单位是字节。
+num-records是总共发送多少条信息。
+throughput 是每秒多少条信息，设成-1，表示不限流，尽可能快的生产数据，可测出生产者最大吞吐量。
                                                          # 50万条数据  200字节/个数据
 ./kafka-producer-perf-test.sh --topic test --num-records 500000 --record-size 200   --throughput -1  --producer-props bootstrap.servers=192.168.13.148:9092
 
