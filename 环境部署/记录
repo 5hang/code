@@ -2,3 +2,11 @@
 2181:  zookeeper 客户端连接的端口  clientPort  这是客户端连接服务器的端口，默认是2181.
 9092:  kafka 监听客户端连接的 端口奥
 9600： logstash 监听127.0.0.1:9600 的在命令行中看到 Successfully started Logstash API endpoint {:port=>9600} 即代表启动成功。
+
+
+#创建私钥
+openssl genrsa -des3 -out ca.key  2048 
+#创建证书请求
+openssl req -new -key ca.key  -out ca.csr 
+#生产证书 包含公钥
+openssl x509 -req -days 365 -in ca.csr -signkey ca.key -out ca.crt
