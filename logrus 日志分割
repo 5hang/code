@@ -1,0 +1,78 @@
+package main
+
+import (
+	"os"
+	"sync"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/rifflock/lfshook"
+
+	"time"
+
+	"github.com/sirupsen/logrus"
+)
+
+var logName = "./file/aaa"
+
+func newLfsHook(maxRemainCnt uint) logrus.Hook {
+	writer, err := rotatelogs.New(
+		logName+".%Y%m%d%H%M%S",
+		// WithLinkName为最新的日志建立软连接，以方便随着找到当前日志文件
+		rotatelogs.WithLinkName(logName),
+		// WithRotationTime设置日志分割的时间，这里设置为一小时分割一次
+		rotatelogs.WithRotationTime(time.Second),
+		// WithMaxAge和WithRotationCount二者只能设置一个，
+		// WithMaxAge设置文件清理前的最长保存时间，
+		// WithRotationCount设置文件清理前最多保存的个数。
+		//rotatelogs.WithMaxAge(time.Hour*24),
+		rotatelogs.WithRotationCount(maxRemainCnt),
+	)
+	if err != nil {
+		logrus.Errorf("config local file system for logger error: %v", err)
+	}
+
+	logrus.SetLevel(logrus.DebugLevel)
+
+	lfsHook := lfshook.NewHook(lfshook.WriterMap{
+		logrus.DebugLevel: writer,
+		logrus.InfoLevel:  writer,
+		logrus.WarnLevel:  writer,
+		logrus.ErrorLevel: writer,
+		logrus.FatalLevel: writer,
+		logrus.PanicLevel: writer,
+	}, &logrus.TextFormatter{DisableColors: true})
+	return lfsHook
+}
+
+func main() {
+	method4()
+}
+
+var way sync.WaitGroup
+
+func method4() {
+	var log = logrus.New()
+	log.AddHook(newLfsHook(1000000000))
+
+	file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY, 0666)
+	if err == nil {
+		log.Out = file
+	} else {
+		log.Info("Failed to log to file")
+	}
+
+	for i := 0; i < 1600; i++ {
+		way.Add(1)
+		go testLog(log)
+	}
+
+	way.Wait()
+}
+
+func testLog(log *logrus.Logger) {
+	defer way.Done()
+	for {
+		log.Debug("889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123889654123")
+		log.Info("This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651This is a fil567890p;fsafsegsfegwe log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2is is a file log 234651232 2")
+	}
+}
