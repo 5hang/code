@@ -11,3 +11,9 @@ FLUSH PRIVILEGES;
 bind 0.0.0.0
 requirepass xxx
 保护模式 yes
+
+
+https://gw3.xdev.stream/mysqladmin/ 
+https://csapi.hfxg.xyz/?url=https://csapi.hfxg.xyz/docs/core.json
+https://gw3.xdev.stream/service/deploy  
+https://csadmin.hfxg.xyz/#/dashboard
