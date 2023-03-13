@@ -19,3 +19,58 @@ https://gw3.xdev.stream/service/deploy
 https://csadmin.hfxg.xyz/#/dashboard
 https://t.me/dajuzi188
 jess的
+
+
+
+
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+	k := int64(0)
+	for i := int64(1000000000); i <= int64(9999999999); i++ {
+		if test10(i) {
+			fmt.Println(i)
+		}
+		k++
+	}
+	fmt.Println(k)
+}
+func test10(num int64) bool {
+	if num%1111111111 == 0 {
+		return true
+	}
+	left := int64(0)
+	right := int64(0)
+	b := int64(0)
+	// ABBBBBBBBB
+	for i := 1; i < 10; i++ {
+		b = int64(math.Pow10(i))
+		left = num / b
+		right = num - left*b
+		if MN(left, 10-i, right, i) {
+			return true
+		}
+	}
+	return false
+}
+
+var m1 = map[int]int64{
+	1: 1,
+	2: 11, 3: 111, 4: 1111, 5: 11111, 6: 111111, 7: 1111111, 8: 11111111, 9: 111111111, 10: 1111111111,
+}
+
+func MN(left int64, m int, right int64, n int) bool {
+	if left%m1[m] != 0 {
+		return false
+	}
+	if right%m1[n] != 0 {
+		return false
+	}
+	return true
+}
+
